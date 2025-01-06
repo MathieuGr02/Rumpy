@@ -1,5 +1,4 @@
 use std::fmt;
-use std::ops::Index;
 
 #[derive(Debug)]
 pub struct RArray2f64{
@@ -13,6 +12,7 @@ impl fmt::Display for RArray2f64{
     }
 }
 
+/*
 impl Index<Vec<f64>> for Vec<f64>{
     type Output = usize;
 
@@ -20,9 +20,10 @@ impl Index<Vec<f64>> for Vec<f64>{
         self.array.get(ind)
     }
 }
+ */
 
 impl RArray2f64{
-    pub fn new(array: &[f64]) -> RArray2f64 {
+    pub fn new(array) -> RArray2f64 {
         let shape: usize = array.len();
         let mut new_array = Self::zeros(shape, shape);
         new_array
@@ -38,7 +39,7 @@ impl RArray2f64{
     pub fn ones(shape: usize) -> RArray2f64{
         let mut array: RArray2f64 = Self::zeros(shape, shape);
         for i in 0..shape{
-            array[i][i] += 1;
+            //array[i][i] += 1;
         }
         array
     }
