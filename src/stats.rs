@@ -1,1 +1,2 @@
-pub fn mean() -> f64 {}
+mod mean;
+
