@@ -1,9 +1,15 @@
 use std::ops::{Add, Div};
 
-pub fn mean<T>(object: &[T]) -> f64
+pub fn mean<T: Copy>(object: &[T]) -> f64
 where
-    T: Add<Output = T> + Div<Output = T> + Iterator<Item = f64>,
+    T: Add<Output = T> + Div<Output = T> + Iterator<Item = T>,
 {
-    let sum: f64 = object.iter().copied().reduce(|a, b| a + b);
-    0.
+    let sum: T = object.iter().copied().reduce(|a, b| a + b).unwrap();
+    let length = object.iter();
+}
+
+pub fn std<T>(object: &[T]) -> f64
+where
+    T:,
+{
 }

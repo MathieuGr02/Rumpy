@@ -1,16 +1,16 @@
-use std::fmt::Debug;
+use std::cmp::Ordering;
 
-pub struct BST<T> {
+pub struct BST<T: Ord> {
     root: Option<Box<Node<T>>>,
 }
 
-pub struct Node<T> {
+pub struct Node<T: Ord> {
     value: T,
     left: Option<Box<Node<T>>>,
     right: Option<Box<Node<T>>>,
 }
 
-impl<T: Ord + Copy + Debug> BST<T> {
+impl<T: Ord + Copy> BST<T> {
     pub fn new() -> BST<T> {
         BST { root: None }
     }
@@ -34,6 +34,48 @@ impl<T: Ord + Copy + Debug> BST<T> {
         }
         // Set new node into child
         *current_node = Some(new_node);
+    }
+
+    pub fn insert_new(&mut self, item: T)
+    {
+        Self::insert_rec(&self.root, item);
+    }
+
+    fn insert_rec(&mut node: Option<Box<Node<T>>>, item: T)
+    {
+        match node
+        {
+            None => node = Some(Box::new(Node {value: item, left: None, right: None})),
+            Some(tree_node) => 
+            {
+                match tree_node.value.cmp(&item) 
+                {
+                    Ordering::Less => Self::insert_rec(&mut tree_node.left, item),
+                    Ordering::Equal => Self::insert_rec(&mut tree_node.right, item),
+                    Ordering::Greater => Self::insert_rec(&mut tree_node.right, item),
+                }
+            }
+        }
+    }
+
+    pub fn exists_new(&self, item: T) -> bool
+    {
+        return Self::exists_rec(&self.root, item);
+    }
+
+    fn exists_rec(node: Option<Box<Node<T>>>, item: T) -> bool
+    {
+        match node 
+        {
+            None => return false,
+            Some(tree_node) => 
+                match tree_node.cmp(item) 
+                {
+                    Ordering::Less => Self::exists_rec(&tree_node.left, item),
+                    Ordering::Equal => return true,
+                    Ordering::Greater => Self::exists_rec(&tree_node.right, item)
+                }
+        }
     }
 
     /// Check if item exists in tree
