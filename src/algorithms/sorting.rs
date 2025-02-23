@@ -2,7 +2,7 @@ pub enum SortType{
     MERGESORT,
     QUICKSORT
 }
-
+/*
 use crate::algorithms::sorting::SortType::{MERGESORT, QUICKSORT};
 use crate::RArray::RArray2f64;
 
@@ -24,3 +24,4 @@ fn mergesort(array: RArray2f64){
 fn quicksort(array: RArray2f64){
     
 }
+*/

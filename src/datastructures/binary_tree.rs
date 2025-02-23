@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-
+/*
 pub struct BST<T: Ord> {
     root: Option<Box<Node<T>>>,
 }
@@ -35,12 +35,10 @@ impl<T: Ord + Copy> BST<T> {
         // Set new node into child
         *current_node = Some(new_node);
     }
-
     pub fn insert_new(&mut self, item: T)
     {
         Self::insert_rec(&self.root, item);
     }
-
     fn insert_rec(&mut node: Option<Box<Node<T>>>, item: T)
     {
         match node
@@ -58,25 +56,25 @@ impl<T: Ord + Copy> BST<T> {
         }
     }
 
-    pub fn exists_new(&self, item: T) -> bool
-    {
-        return Self::exists_rec(&self.root, item);
-    }
+  //  pub fn exists_new(&self, item: T) -> bool
+  //  {
+  //      return Self::exists_rec(&self.root, item);
+  //  }
 
-    fn exists_rec(node: Option<Box<Node<T>>>, item: T) -> bool
-    {
-        match node 
-        {
-            None => return false,
-            Some(tree_node) => 
-                match tree_node.cmp(item) 
-                {
-                    Ordering::Less => Self::exists_rec(&tree_node.left, item),
-                    Ordering::Equal => return true,
-                    Ordering::Greater => Self::exists_rec(&tree_node.right, item)
-                }
-        }
-    }
+ //   fn exists_rec(node: Option<Box<Node<T>>>, item: T) -> bool
+ //   {
+ //       match node 
+ //       {
+ //           None => return false,
+ //           Some(tree_node) => 
+ //               match tree_node.cmp(item) 
+ //               {
+ //                   Ordering::Less => Self::exists_rec(&tree_node.left, item),
+ //                  Ordering::Equal => return true,
+ //                   Ordering::Greater => Self::exists_rec(&tree_node.right, item)
+ //               }
+ //       }
+ //   }
 
     /// Check if item exists in tree
     pub fn exists(&self, item: T) -> bool {
@@ -165,3 +163,4 @@ mod tests {
         assert_eq!(5, bst.max());
     }
 }
+*/
