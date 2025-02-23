@@ -1,5 +1,3 @@
-use core::f64;
-use std::ops::{Add, Div};
 /*
 pub fn mean<T: Copy>(object: &[T]) -> f64
 where

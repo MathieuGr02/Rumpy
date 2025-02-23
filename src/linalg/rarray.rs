@@ -1,3 +1,5 @@
+use rand::seq::IndexedRandom;
+
 use crate::linalg;
 use core::fmt;
 use std::{collections::btree_map::Range, ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
@@ -39,6 +41,27 @@ impl fmt::Display for Rarray {
 }
 
 impl Rarray {
+    pub fn new(matrix: Vec<Vec<f64>>) -> Self {
+        let height: usize = matrix.len();
+        let width: usize = matrix[0].len();
+
+        let mut data = vec![];  
+        for row_matrix in matrix.iter() {
+            let col_len = row_matrix.len(); 
+            assert_eq!(col_len, width, "All columns must be of same size");
+            
+            for element in row_matrix.iter() {
+                data.push(*element);
+            }
+        }
+        
+        Rarray {
+            height,
+            width,
+            data
+        }
+    }
+
     pub fn shape(&self) -> (usize, usize) {
         (self.height, self.width)
     }

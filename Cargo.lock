@@ -3,13 +3,6 @@
 version = 4
 
 [[package]]
-name = "Rumpy"
-version = "0.1.0"
-dependencies = [
- "rand",
-]
-
-[[package]]
 name = "bitflags"
 version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -101,6 +94,13 @@ checksum = "7a509b1a2ffbe92afab0e55c8fd99dea1c280e8171bd2d88682bb20bc41cbc2c"
 dependencies = [
  "getrandom",
  "zerocopy 0.8.20",
+]
+
+[[package]]
+name = "rumpy"
+version = "0.1.0"
+dependencies = [
+ "rand",
 ]
 
 [[package]]
