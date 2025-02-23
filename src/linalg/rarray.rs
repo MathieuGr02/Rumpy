@@ -113,6 +113,17 @@ impl Sub for Rarray {
     }
 }
 
+impl SubAssign for Rarray {
+    fn sub_assign(&mut self, _other: Self) {
+        assert_eq!(self.width, _other.width, "Column must be of same size");
+        assert_eq!(self.height, _other.height, "Rows must be of same size");
+
+        for i in 0..(self.width * self.height) {
+            self.data[i] -= _other.data[i];
+        }
+    }
+}
+
 impl Mul for Rarray {
     type Output = Self;
 
@@ -177,14 +188,4 @@ impl MulAssign<f64> for Rarray {
     }
 }
 
-impl SubAssign for Rarray {
-    fn sub_assign(&mut self, _other: Self) {
-        assert_eq!(self.width, _other.width, "Column must be of same size");
-        assert_eq!(self.height, _other.height, "Rows must be of same size");
 
-        let mut sub_array = linalg::zeros(self.width, self.height);
-        for i in 0..(self.width * self.height) {
-            sub_array.data[i] -= _other.data[i];
-        }
-    }
-}
