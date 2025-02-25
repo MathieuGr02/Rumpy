@@ -13,6 +13,20 @@ pub struct Rarray {
     pub(crate) data: Vec<f64>
 }
 
+#[derive(debug)]
+pub struct Ndrarray {
+    pub(crate) shape: Vec<usize>,
+    pub(crate) data: Vec<f64>
+}
+
+impl Add for Ndrarray {
+    type Output = Ndrarray;
+
+    fn add(self, _other: Ndrarray) {
+
+    }
+}
+
 impl fmt::Display for Rarray {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut formatted_string: String = Default::default();

@@ -42,4 +42,12 @@ pub fn random(height: usize, width: usize) -> Rarray {
     }
 }
 
+pub fn vstack() {} 
 
+pub fn hstack() {}
+
+pub fn reshape() {}
+
+pub fn flatten() {}
+
+pub fn  
