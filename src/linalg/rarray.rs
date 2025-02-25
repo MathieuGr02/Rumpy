@@ -1,228 +1,101 @@
-use rand::seq::IndexedRandom;
-
-use crate::linalg;
-use core::fmt;
 use std::{collections::btree_map::Range, ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
 
-use super::base;
+use rand::seq::IndexedRandom;
 
+// Dimensions
+pub type D1 = [usize; 1];
+pub type D2 = [usize; 2];
+pub type D3 = [usize; 3];
+
+pub trait Dimension {
+    const SIZE: usize;
+
+    fn count_items(&self) -> usize;
+}
+
+impl Dimension for D1 {
+    const SIZE: usize = 1;
+
+    fn count_items(&self) -> usize {
+        let mut items: usize = 1; 
+        for i in 0..self.len() {
+            items *= self[i]; 
+        }
+
+        items
+    }
+}
+
+impl Dimension for D2 {
+    const SIZE: usize = 2;
+    
+    fn count_items(&self) -> usize {
+        let mut items: usize = 1; 
+        for i in 0..self.len() {
+            items *= self[i]; 
+        }
+
+        items
+    }
+}
+
+impl Dimension for D3 {
+    const SIZE: usize = 3;
+
+    fn count_items(&self) -> usize {
+        let mut items: usize = 1; 
+        for i in 0..self.len() {
+            items *= self[i]; 
+        }
+
+        items
+    }
+}
+
+
+// Base array struct 
+#[derive(Debug)]
+struct Rarray<T, D> where D: Dimension {
+    pub(crate) data: Vec<T>,
+    pub(crate) shape: D
+}
+
+// Specific implementations 
+pub type Rarray1D = Rarray<f64, D1>;
+pub type Rarray2D = Rarray<f64, D2>;
+pub type Rarray3D = Rarray<f64, D3>;
+
+impl<T, D> Add for Rarray<T, D> where 
+    T : Add + Copy,
+    D: Dimension + Iterator + Mul
+{
+    type Output = Rarray<T, D>;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        let items: usize = self.shape.count_items();
+        let mut add_rarray = Rarray::<T, D> {
+            shape: self.shape,
+            data: Vec::<T>::with_capacity(items) 
+        };
+        
+        for i in 0..self.data.len() {
+            add_rarray.data[i] = self.data[i] + rhs.data[i];
+        }
+
+        add_rarray
+    }
+}
+
+mod tests {
+    fn test_rarray1d(){
+    }
+}
+
+/*
 #[derive(Debug)]
 pub struct Rarray {
     pub(crate) width: usize,
     pub(crate) height: usize,
     pub(crate) data: Vec<f64>
 }
-
-#[derive(debug)]
-pub struct Ndrarray {
-    pub(crate) shape: Vec<usize>,
-    pub(crate) data: Vec<f64>
-}
-
-impl Add for Ndrarray {
-    type Output = Ndrarray;
-
-    fn add(self, _other: Ndrarray) {
-
-    }
-}
-
-impl fmt::Display for Rarray {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut formatted_string: String = Default::default();
-
-        for i in 0..self.height {
-            let mut row_string: String = Default::default();
-           
-            for j in 0..self.width {
-                row_string.push_str(&self.data[self.height * i].to_string());
-                row_string.push_str(", ");
-            }          
-            
-            row_string.pop();
-            row_string.pop();
-   
-            formatted_string.push_str("[");
-            formatted_string.push_str(&row_string);
-            formatted_string.push_str("],\n");
-        }
-
-        formatted_string.pop();
-        formatted_string.pop();
-        
-        write!(f, "[{}]", &formatted_string)
-    }
-}
-
-impl Rarray {
-    pub fn new(matrix: Vec<Vec<f64>>) -> Self {
-        let height: usize = matrix.len();
-        let width: usize = matrix[0].len();
-
-        let mut data = vec![];  
-        for row_matrix in matrix.iter() {
-            let col_len = row_matrix.len(); 
-            assert_eq!(col_len, width, "All columns must be of same size");
-            
-            for element in row_matrix.iter() {
-                data.push(*element);
-            }
-        }
-        
-        Rarray {
-            height,
-            width,
-            data
-        }
-    }
-
-    pub fn shape(&self) -> (usize, usize) {
-        (self.height, self.width)
-    }
-}
-
-impl Index<[usize; 2]> for Rarray {
-    type Output = f64;
-
-    fn index(&self, index: [usize; 2]) -> &Self::Output {
-        let row = index[0];
-        let col = index[1]; 
-
-        assert!(row < self.height, "Index must be smaller then row");
-        assert!(col < self.width, "Index must be smaller then column");
-
-        &self.data[row * (self.width - 1) + col]    
-    }
-}
-
-impl IndexMut<[usize; 2]> for Rarray {
-    fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
-        let row = index[0];
-        let col = index[1];
-
-        assert!(row < self.height);
-        assert!(col < self.width);
-
-        &mut self.data[row * (self.width - 1) + col]
-    }
-}
-
-impl Add for Rarray {
-    type Output = Self;
-
-    fn add(self, _other: Self) -> Self::Output {
-        assert_eq!(self.width, _other.width, "Column must be of same size");
-        assert_eq!(self.height, _other.height, "Rows must be of same size");
-        
-        let mut add_array = linalg::zeros(self.width, self.height);
-        for i in 0..(self.width * self.height) {
-            add_array.data[i] = self.data[i] + _other.data[i];
-        }
-
-        add_array
-    } 
-}
-
-impl AddAssign for Rarray {
-    fn add_assign(&mut self, _other: Self) {
-        assert_eq!(self.width, _other.width, "Column must be of same size");
-        assert_eq!(self.height, _other.height, "Rows must be of same size");
-
-        for i in 0..(self.width * self.height) {
-            self.data[i] += _other.data[i];
-        }
-    }
-}
-
-impl Sub for Rarray {
-    type Output = Self;
-
-    fn sub(self, _other: Self) -> Self::Output {
-        assert_eq!(self.width, _other.width, "Column must be of same size");
-        assert_eq!(self.height, _other.height, "Rows must be of same size");
-
-        let mut sub_array = linalg::zeros(self.width, self.height);
-        for i in 0..(self.width * self.height) {
-            sub_array.data[i] = self.data[i] - _other.data[i];
-        }
-
-        sub_array
-    }
-}
-
-impl SubAssign for Rarray {
-    fn sub_assign(&mut self, _other: Self) {
-        assert_eq!(self.width, _other.width, "Column must be of same size");
-        assert_eq!(self.height, _other.height, "Rows must be of same size");
-
-        for i in 0..(self.width * self.height) {
-            self.data[i] -= _other.data[i];
-        }
-    }
-}
-
-impl Mul for Rarray {
-    type Output = Self;
-
-    fn mul(self, _other: Self) -> Self::Output {
-        assert_eq!(self.width, _other.height, "Matrix of type [{}, {}] incompatible with [{}, {}]", self.height, self.width, _other.height, _other.width);
-        
-        let mut mul_rarray = linalg::zeros(self.height, _other.width);
-
-        for i in 0..self.height {
-            for j in 0.._other.width {
-                let mut row_sum: f64 = 0.;
-                for k in 0..self.width {
-                   row_sum += self.data[i * self.height + k] * _other.data[k * _other.width + j]; 
-                }
-                mul_rarray.data[i * self.height + j] = row_sum;
-            } 
-        }
-
-        mul_rarray
-    }
-}
-
-impl Mul<f64> for Rarray {
-    type Output = Self;
-
-    fn mul(self, factor: f64) -> Self::Output {
-        let mut mul_rarray = base::zeros(self.height, self.width);
-
-        for i in 0..(self.width * self.height) {
-            mul_rarray.data[i] = factor * self.data[i];
-        }
-
-        mul_rarray
-    }
-}
-
-impl MulAssign for Rarray {
-    fn mul_assign(&mut self, _other: Self) {
-        assert_eq!(self.width, _other.height, "Matrix of type [{}, {}] incompatible with [{}, {}]", self.height, self.width, _other.height, _other.width);
-        
-        let mut mul_rarray = linalg::zeros(self.height, _other.width);
-
-        for i in 0..self.height {
-            for j in 0.._other.width {
-                let mut row_sum: f64 = 0.;
-                for k in 0..self.width {
-                   row_sum += self.data[i * self.height + k] * _other.data[k * _other.width + j]; 
-                }
-                mul_rarray.data[i * self.height + j] = row_sum;
-            } 
-        }
-    }
-}
-
-impl MulAssign<f64> for Rarray {
-    fn mul_assign(&mut self, factor: f64) {
-        let mut mul_rarray = linalg::zeros(self.height, self.width);
-
-        for i in 0..(self.width * self.height) {
-            mul_rarray.data[i] = factor * self.data[i]; 
-        }
-    }
-}
-
-
+*/
