@@ -1,10 +1,8 @@
-use crate::linalg::rarray::Rarray;
 use crate::linalg;
-use crate::linalg::base::*;
 use core::fmt;
 use std::{ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
 
-
+/*
 impl fmt::Display for Rarray {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut formatted_string: String = Default::default();
@@ -203,4 +201,4 @@ impl MulAssign<f64> for Rarray {
     }
 }
 
-
+*/
