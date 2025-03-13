@@ -4,52 +4,7 @@ use super::rarray::{Rarray, Rarray1D};
 use core::panic;
 use std::{default, ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
 
-// Base functionality for the Rarray1D struct
-impl Rarray1D {
-    pub fn new(data: &[f64]) -> Self {
-       Rarray1D {
-            shape : [data.len()],
-            data: data.to_vec()
-       }
-    }
-
-    pub fn zeros(size: usize) -> Self {
-        Rarray1D {
-            shape: [size],
-            data: vec![0.; size]
-        }
-    }
-
-    pub fn ones(size: usize) -> Self {
-        Rarray1D {
-            shape: [size],
-            data: vec![1.; size]
-        }
-    }
-}
-
 // Base operations for the Rarray abstract struct
-impl<T, D> Add<Rarray<T, D>> for Rarray<T, D> where 
-    T : Add<Output = T> + Copy + Default
-{
-    type Output = Rarray<T, D>;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
-
-        let mut add_rarray = Rarray::<T, D> {
-            shape: self.shape,
-            data: vec![T::default(); self.data.len()] 
-        };
-        
-        for i in 0..self.data.len() {
-            add_rarray.data[i] = self.data[i] + rhs.data[i];
-        }
-
-        add_rarray
-    }
-}
-
 impl<T, D> Add<&Rarray<T, D>> for &Rarray<T, D> where 
     T : Add<Output = T> + Copy + Default,
     D : Copy
@@ -72,10 +27,10 @@ impl<T, D> Add<&Rarray<T, D>> for &Rarray<T, D> where
     }
 }
 
-impl<T, D> AddAssign<Rarray<T, D>> for Rarray<T, D> where 
+impl<T, D> AddAssign<&Rarray<T, D>> for Rarray<T, D> where 
     T: AddAssign + Copy + Default
 {
-    fn add_assign(&mut self, rhs: Self) {
+    fn add_assign(&mut self, rhs: &Rarray<T, D>) {
         assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
 
         for i in 0..self.data.len() {
@@ -85,12 +40,13 @@ impl<T, D> AddAssign<Rarray<T, D>> for Rarray<T, D> where
 }
 
 
-impl<T, D> Sub<Rarray<T, D>> for Rarray<T, D> where 
-    T : Sub<Output = T> + Copy + Default
+impl<T, D> Sub<&Rarray<T, D>> for &Rarray<T, D> where 
+    T : Sub<Output = T> + Copy + Default,
+    D : Copy
 {
     type Output = Rarray<T, D>;
 
-    fn sub(self, rhs: Self) -> Self::Output {
+    fn sub(self, rhs: &Rarray<T, D>) -> Self::Output {
         assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
 
         let mut sub_rarray = Rarray::<T, D> {
@@ -107,10 +63,10 @@ impl<T, D> Sub<Rarray<T, D>> for Rarray<T, D> where
 }
 
 
-impl<T, D> SubAssign<Rarray<T, D>> for Rarray<T, D> where 
+impl<T, D> SubAssign<&Rarray<T, D>> for Rarray<T, D> where 
     T: SubAssign + Copy + Default
 {
-    fn sub_assign(&mut self, rhs: Rarray<T, D>) {
+    fn sub_assign(&mut self, rhs: &Rarray<T, D>) {
         assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
 
         for i in 0..self.data.len() {
