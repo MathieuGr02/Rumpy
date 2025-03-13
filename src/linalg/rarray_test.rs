@@ -1,66 +1,7 @@
 #[cfg(test)]
 mod tests {
     use rstest::rstest;
-    use crate::linalg::rarray::Rarray1D;
-    /*
-    #[test]
-    fn rarray_print_test() {
-        let matrix = linalg::zeros(3, 3);
-        assert_eq!("[[0, 0, 0],\n[0, 0, 0],\n[0, 0, 0]]", format!("{matrix}"));
-    }
-
-    #[test]
-    fn rarray_indexing() {
-        let matrix = linalg::zeros(3, 3);
-        assert_eq!(matrix[[0, 0]], 0.);
-    }
-
-    #[test]
-    fn rarray_mut_indexing() {
-        let mut matrix = linalg::zeros(3, 3);
-        assert_eq!(matrix[[0, 0]], 0.);
-
-        matrix[[0, 0]] = 1.;
-        matrix[[0, 2]] = 1.;
-        matrix[[2, 0]] = 1.;
-        matrix[[2, 2]] = 1.;
-
-        assert_eq!(matrix[[0, 0]], 1.);
-        assert_eq!(matrix[[2, 0]], 1.);
-        assert_eq!(matrix[[0, 2]], 1.);
-        assert_eq!(matrix[[2, 2]], 1.);
-        assert_eq!(matrix[[1, 1]], 0.);
-    }
-    
-    #[test]
-    #[should_panic]
-    fn rarray_row_outofbounds_indexing() {
-        let matrix = linalg::zeros(3, 3);
-        let _ = matrix[[3, 0]];
-    }
-
-    #[test]
-    #[should_panic]
-    fn rarray_row_outofbounds_mut_indexing() {
-        let mut matrix = linalg::zeros(3, 3);
-        let _ = matrix[[3, 0]];
-    }
-
-    #[test]
-    #[should_panic]
-    fn array_column_outofbounds_indexing() {
-        let matrix = linalg::zeros(3, 3);
-        let _ = matrix[[0, 3]];
-    }
-
-    #[test]
-    #[should_panic]
-    fn array_column_outofbounds_mut_indexing() {
-        let mut matrix = linalg::zeros(3, 3);
-        let _ = matrix[[0, 3]];
-    }
-
-    */
+    use crate::linalg::rarray::{self, Rarray1D};
 
     #[rstest]
     #[case(&[1.], &[1.], &[2.])]
@@ -156,6 +97,45 @@ mod tests {
         let mut rarray_m = Rarray1D::new(m);
         let rarray_n = Rarray1D::new(n);
         rarray_m -= &rarray_n;
+    }
+
+    #[rstest]
+    #[case(&[1., 2., 3.], 0, 1.)]
+    #[case(&[1., 2., 3.], 1, 2.)]
+    #[case(&[1., 2., 3.], 2, 3.)]
+    fn rarray1d_indexing(#[case] a: &[f64], #[case] index: usize, #[case] result: f64){
+        let rarray = Rarray1D::new(a);
+        assert_eq!(rarray[index], result);
+    }
+
+    #[rstest]
+    #[case(&[1., 2., 3.], 0, 0.)]
+    #[case(&[1., 2., 3.], 1, 0.)]
+    #[case(&[1., 2., 3.], 2, 0.)]
+    fn rarray1d_mut_indexing(#[case] a: &[f64], #[case] index: usize, #[case] value: f64){
+        let mut rarray = Rarray1D::new(a);
+        rarray[index] = value;
+        assert_eq!(rarray[index], value);
+    }
+
+    #[rstest]
+    #[case(&[1., 2., 3.], 3)]
+    #[should_panic]
+    fn rarray1d_out_of_bounds_indexing(#[case] a: &[f64], #[case] index: usize){
+        let rarray = Rarray1D::new(a);
+        let _ = rarray[index];
+    }
+
+    #[rstest]
+    #[case(&[1., 1., 1.], 1., &[1., 1., 1.])]
+    #[case(&[1., 1., 2.], 0., &[0., 0., 0.])]
+    #[case(&[1., 2., 3.], 3., &[3., 6., 9.])]
+    fn rarra1d_scalar_mul(#[case] a: &[f64], #[case] scalar: f64, #[case] result: &[f64]){
+        let mut rarray = Rarray1D::new(a);
+        let rarray_mul_result = &rarray * scalar;
+        for i in 0..(rarray.shape[0]){
+           assert_eq!(rarray_mul_result.data[i], result[i]); 
+        }
     }
 }
 

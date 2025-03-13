@@ -3,7 +3,6 @@ use std::{collections::btree_map::Range, ops::{Add, AddAssign, Index, IndexMut, 
 use rand::seq::IndexedRandom;
 
 // Dimensions
-pub type D1 = [usize; 1];
 pub type D2 = [usize; 2];
 pub type D3 = [usize; 3];
 
@@ -15,6 +14,6 @@ pub(crate) struct Rarray<T, D> {
 }
 
 // Specific implementations 
-pub type Rarray1D = Rarray<f64, D1>;
+pub type Rarray1D = Rarray<f64, D2>;
 pub type Rarray2D = Rarray<f64, D2>;
 pub type Rarray3D = Rarray<f64, D3>;
