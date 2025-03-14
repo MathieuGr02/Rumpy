@@ -8,7 +8,7 @@ pub type D3 = [usize; 3];
 
 // Base array struct 
 #[derive(Debug)]
-pub(crate) struct Rarray<T, D> {
+pub struct Rarray<T, D> {
     pub(crate) data: Vec<T>,
     pub(crate) shape: D
 }

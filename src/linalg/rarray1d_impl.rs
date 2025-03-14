@@ -78,3 +78,9 @@ impl Mul<f64> for &Rarray1D {
         }
     }
 }
+
+impl MulAssign<f64> for Rarray1D {
+    fn mul_assign(&mut self, rhs: f64) {
+        self.data = self.data.iter().map(|x| rhs * x).collect();
+    }
+}

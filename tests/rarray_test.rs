@@ -1,7 +1,7 @@
 #[cfg(test)]
-mod tests {
+mod test {
     use rstest::rstest;
-    use crate::linalg::rarray::{self, Rarray1D};
+    use rumpy::linalg::rarray::Rarray1D;
 
     #[rstest]
     #[case(&[1.], &[1.], &[2.])]
@@ -12,8 +12,8 @@ mod tests {
         let rarray_m = Rarray1D::new(m);
         let rarray_n = Rarray1D::new(n);
         let rarray_result = &rarray_m + &rarray_n;
-        for i in 0..(rarray_m.data.len()) {
-            assert_eq!(rarray_result.data[i], result[i]);
+        for i in 0..(rarray_m.get_shape()[0]) {
+            assert_eq!(rarray_result[i], result[i]);
         }
     }
 
@@ -26,7 +26,7 @@ mod tests {
         let rarray_n = Rarray1D::new(n);
         let _ = &rarray_m + &rarray_n;
     }
-    
+
     #[rstest]
     #[case(&[1.], &[1.], &[2.])]
     #[case(&[1., 1., 1.], &[1., 1., 1.], &[2., 2., 2.])]
@@ -36,8 +36,8 @@ mod tests {
         let mut rarray_m = Rarray1D::new(m);
         let rarray_n = Rarray1D::new(n);
         rarray_m += &rarray_n;
-        for i in 0..(rarray_m.data.len()) {
-            assert_eq!(rarray_m.data[i], result[i]);
+        for i in 0..(rarray_m.get_shape()[0]) {
+            assert_eq!(rarray_m[i], result[i]);
         }
     }
 
@@ -60,8 +60,8 @@ mod tests {
         let rarray_m = Rarray1D::new(m);
         let rarray_n = Rarray1D::new(n);
         let rarray_result = &rarray_m - &rarray_n;
-        for i in 0..(rarray_m.data.len()) {
-            assert_eq!(rarray_result.data[i], result[i]);
+        for i in 0..(rarray_m.get_shape()[0]) {
+            assert_eq!(rarray_result[i], result[i]);
         }
     }
 
@@ -84,8 +84,8 @@ mod tests {
         let mut rarray_m = Rarray1D::new(m);
         let rarray_n = Rarray1D::new(n);
         rarray_m -= &rarray_n;
-        for i in 0..(rarray_m.data.len()) {
-            assert_eq!(rarray_m.data[i], result[i]);
+        for i in 0..(rarray_m.get_shape()[0]) {
+            assert_eq!(rarray_m[i], result[i]);
         }
     }
 
@@ -131,11 +131,22 @@ mod tests {
     #[case(&[1., 1., 2.], 0., &[0., 0., 0.])]
     #[case(&[1., 2., 3.], 3., &[3., 6., 9.])]
     fn rarra1d_scalar_mul(#[case] a: &[f64], #[case] scalar: f64, #[case] result: &[f64]){
-        let mut rarray = Rarray1D::new(a);
+        let rarray = Rarray1D::new(a);
         let rarray_mul_result = &rarray * scalar;
-        for i in 0..(rarray.shape[0]){
-           assert_eq!(rarray_mul_result.data[i], result[i]); 
+        for i in 0..(rarray.get_shape()[0]){
+            assert_eq!(rarray_mul_result[i], result[i]); 
+        }
+    }
+
+    #[rstest]
+    #[case(&[1., 1., 1.], 1., &[1., 1., 1.])]
+    #[case(&[1., 1., 2.], 0., &[0., 0., 0.])]
+    #[case(&[1., 2., 3.], 3., &[3., 6., 9.])]
+    fn rarra1d_scalar_mul_assign(#[case] a: &[f64], #[case] scalar: f64, #[case] result: &[f64]){
+        let mut rarray = Rarray1D::new(a);
+        rarray *= scalar;
+        for i in 0..(rarray.get_shape()[0]){
+            assert_eq!(rarray[i], result[i]); 
         }
     }
 }
-

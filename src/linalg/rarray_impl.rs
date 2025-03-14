@@ -1,15 +1,12 @@
-use rand::seq::IndexedRandom;
-
 use super::rarray::{Rarray, Rarray1D};
-use core::panic;
-use std::{default, ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
+use std::{ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
 
 impl<T, D> Rarray<T, D> {
-    fn shape(&self) -> &D {
+    pub fn get_shape(&self) -> &D {
         &self.shape
     }
     // TODO: Implement following functions
-    fn to_owned() {}
+    pub fn to_owned() {}
 }
 
 // Base operations for the Rarray abstract struct

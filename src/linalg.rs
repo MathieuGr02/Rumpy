@@ -1,5 +1,5 @@
-mod rarray;
-mod rarray_impl;
-mod rarray_test;
-mod impl_rarray;
-mod rarray1d_impl;
+pub mod rarray;
+pub mod rarray_impl;
+pub mod impl_rarray;
+pub mod rarray1d_impl;
+pub mod rarray1d_ops;
