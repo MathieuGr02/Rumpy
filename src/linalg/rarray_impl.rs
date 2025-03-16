@@ -2,10 +2,13 @@ use super::rarray::{Rarray, Rarray1D};
 use std::{ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
 
 impl<T, D> Rarray<T, D> {
+    /// Return shape of array
     pub fn get_shape(&self) -> &D {
         &self.shape
     }
     // TODO: Implement following functions
+
+    /// Move ownership of array
     pub fn to_owned() {}
 }
 

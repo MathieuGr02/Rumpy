@@ -1,8 +1,44 @@
 use std::iter::zip;
 
-use rand::seq::IndexedRandom;
+use super::rarray::{Rarray1D, Rarray2D, D1};
 
-use super::rarray::{Rarray1D, Rarray2D};
+// Base functionality for the Rarray1D struct
+impl Rarray1D {
+    /// Create new rarray from passed array 
+    pub fn new(data: &[f64]) -> Self {
+       Rarray1D {
+            shape : D1 { width: data.len() as usize, height: 1 },
+            data: data.to_vec()
+       }
+    }
+
+    /// Create rarray filled with zeros
+    pub fn zeros(size: usize) -> Self {
+        Rarray1D {
+            shape: D1 { width: size, height: 1},
+            data: vec![0.; size]
+        }
+    }
+    
+    /// Create rarray filled with ones
+    pub fn ones(size: usize) -> Self {
+        Rarray1D {
+            shape: D1 { width: size, height: 1},
+            data: vec![1.; size]
+        }
+    }
+}
+
+impl Rarray1D {
+    /*
+    fn transpose(&self) -> Self {
+        Rarray1D {
+            shape: [self.shape[1]],
+            data: self.data.clone()
+        }
+    }
+    */
+}
 
 impl Rarray1D {
     /// Calculate dot product of two vectors
@@ -25,6 +61,26 @@ impl Rarray1D {
                 
             }
         }
+    }
+    */
+
+    /// Sum values of array
+    pub fn sum(&self) -> f64 {
+        self.data.iter().sum()
+    }
+   
+    // TODO: yet to implement functionality
+    /*
+    pub fn unique(&self) -> Rarray1D {
+        
+    }
+
+    pub fn unique_index(&self) -> Rarray1D {
+
+    }
+
+    pub fn diag(&self) -> Rarray2D {
+    
     }
     */
 }

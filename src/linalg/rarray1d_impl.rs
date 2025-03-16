@@ -1,44 +1,6 @@
 use std::ops::{Index, IndexMut, Mul, MulAssign};
-use std::process::Output;
-use std::slice::SliceIndex;
 
-use super::rarray::{Rarray1D, D2};
-
-// Base functionality for the Rarray1D struct
-impl Rarray1D {
-    /// Create new rarray from passed array 
-    pub fn new(data: &[f64]) -> Self {
-       Rarray1D {
-            shape : [data.len(), 1],
-            data: data.to_vec()
-       }
-    }
-
-    /// Create rarray filled with zeros
-    pub fn zeros(size: usize) -> Self {
-        Rarray1D {
-            shape: [size, 1],
-            data: vec![0.; size]
-        }
-    }
-    
-    /// Create rarray filled with ones
-    pub fn ones(size: usize) -> Self {
-        Rarray1D {
-            shape: [size, 1],
-            data: vec![1.; size]
-        }
-    }
-}
-
-impl Rarray1D {
-    fn transpose(&self) -> Self {
-        Rarray1D {
-            shape: [self.shape[1], self.shape[0]],
-            data: self.data.clone()
-        }
-    }
-}
+use super::rarray::Rarray1D;
 
 impl Index<usize> for Rarray1D {
     type Output = f64;
