@@ -5,10 +5,10 @@ use super::rarray::{Rarray1D, Rarray2D, D1};
 // Base functionality for the Rarray1D struct
 impl Rarray1D {
     /// Create new rarray from passed array 
-    pub fn new(data: &[f64]) -> Self {
+    pub fn new(data: &Vec<f64>) -> Self {
        Rarray1D {
             shape : D1 { width: data.len() as usize, height: 1 },
-            data: data.to_vec()
+            data: data.clone()
        }
     }
 
@@ -30,14 +30,18 @@ impl Rarray1D {
 }
 
 impl Rarray1D {
-    /*
-    fn transpose(&self) -> Self {
+    /// Tranpose 1D matrix
+    pub fn transpose(&self) -> Self {
         Rarray1D {
-            shape: [self.shape[1]],
+            shape: D1 { width: self.shape.height, height: self.shape.width },
             data: self.data.clone()
         }
     }
-    */
+
+    /// Tranpose 1D matrix inplace
+    pub fn mut_transpose(&mut self){
+        self.shape = D1 { width: self.shape.height, height: self.shape.width };
+    } 
 }
 
 impl Rarray1D {
@@ -50,7 +54,6 @@ impl Rarray1D {
         }
         result
     }
-
     /*
     pub fn outer(a: &Self, b: &Self) -> Rarray2D {
         let mut outer_matrix: Rarray2D = Rarray2D { 
@@ -62,8 +65,7 @@ impl Rarray1D {
             }
         }
     }
-    */
-
+*/
     /// Sum values of array
     pub fn sum(&self) -> f64 {
         self.data.iter().sum()

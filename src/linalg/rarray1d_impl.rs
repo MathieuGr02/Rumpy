@@ -46,3 +46,11 @@ impl MulAssign<f64> for Rarray1D {
         self.data = self.data.iter().map(|x| rhs * x).collect();
     }
 }
+
+impl Mul<&Rarray1D> for &Rarray1D {
+    type Output = f64;
+
+    fn mul(self, rhs: &Rarray1D) -> Self::Output {
+        Rarray1D::dot(self, rhs)
+    }
+}

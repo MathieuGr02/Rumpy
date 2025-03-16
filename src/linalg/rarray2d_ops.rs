@@ -1,15 +1,19 @@
+use rand::seq::IndexedRandom;
+
 use super::rarray::{Rarray1D, Rarray2D, D2};
 
 impl Rarray2D {
     /// Create new rarray from passed array 
-    /*
-    pub fn new(data: &[&[f64]]) -> Self {
-       Rarray2D {
-            shape : [data.len(), 1],
-            data: data.to_vec()
-       }
+    pub fn new(data: &Vec<Vec<f64>>) -> Self {
+        let width = data[0].len();
+        for i in 1..data.len() {
+            assert_eq!(width, data[i].len(), "All rows need to be of the same size");
+        }
+        Rarray2D {
+            shape : D2 { width, height: data.len() },
+            data: data.clone().into_iter().flatten().collect() 
+        }
     }
-    */
 
     /// Create rarray filled with zeros
     pub fn zeros(width: usize, height: usize) -> Self {

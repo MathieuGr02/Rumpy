@@ -4,8 +4,8 @@ use std::{collections::btree_map::Range, ops::{Add, AddAssign, Index, IndexMut, 
 // Dimensions
 #[derive(Debug, Clone, Copy)]
 pub struct D1{
-    pub width: usize,
-    pub height: usize
+    pub height: usize,
+    pub width: usize
 }
 
 impl Index<usize> for D1 {
@@ -22,8 +22,8 @@ impl Index<usize> for D1 {
 
 #[derive(Debug, Clone, Copy)]
 pub struct D2{
-    pub width: usize,
-    pub height: usize
+    pub height: usize,
+    pub width: usize
 }
 
 impl Index<usize> for D2 {
@@ -40,8 +40,8 @@ impl Index<usize> for D2 {
 
 #[derive(Debug, Clone, Copy)]
 pub struct D3{
-    pub width: usize,
     pub height: usize,
+    pub width: usize,
     pub depth: usize
 }
 
