@@ -13,7 +13,7 @@ impl Index<[usize; 2]> for Rarray2D {
 
 impl IndexMut<[usize; 2]> for Rarray2D {
     fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
-        assert!(self.shape[0] < index[0] && self.shape[1] < index[1], "Index out of bounds");
+        assert!((index[0] < self.shape[0]) && index[1] < self.shape[1], "Index out of bounds");
         &mut self.data[index[0] * self.shape[0] + index[1]]
     }
 }

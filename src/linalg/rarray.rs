@@ -1,5 +1,5 @@
 use core::panic;
-use std::{collections::btree_map::Range, ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
+use std::{ops::Index, usize};
 
 // Dimensions
 #[derive(Debug, Clone, Copy)]
@@ -57,6 +57,12 @@ impl Index<usize> for D3 {
         }
     }
 }
+
+pub trait Dimension {}
+
+impl Dimension for D1 {}
+impl Dimension for D2 {}
+impl Dimension for D3 {}
 
 // Base array struct 
 #[derive(Debug)]

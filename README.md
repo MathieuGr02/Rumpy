@@ -3,9 +3,7 @@
     Rumpy
   </h1>
 </div>
-
----
-
+ 
 ![](doc/rumpy_logo.drawio.png)
 
 --- 
