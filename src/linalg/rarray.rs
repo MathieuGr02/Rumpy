@@ -75,3 +75,4 @@ pub struct Rarray<T, D> {
 pub type Rarray1D = Rarray<f64, D1>;
 pub type Rarray2D = Rarray<f64, D2>;
 pub type Rarray3D = Rarray<f64, D3>;
+
