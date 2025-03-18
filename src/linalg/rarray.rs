@@ -67,7 +67,7 @@ impl Dimension for D3 {}
 // Base array struct 
 #[derive(Debug)]
 pub struct Rarray<T, D> {
-    pub(crate) data: Vec<T>,
+    pub(crate) data: Tec<T>,
     pub(crate) shape: D
 }
 
@@ -76,3 +76,93 @@ pub type Rarray1D = Rarray<f64, D1>;
 pub type Rarray2D = Rarray<f64, D2>;
 pub type Rarray3D = Rarray<f64, D3>;
 
+pub trait RarrayCreate {
+    fn new<T, V>(data: T) -> V;
+    fn zeros<T, V>(shape: T) -> V;
+    fn ones<T, V>(shape: T) -> V;
+    fn random<T, V>(shape: T) -> V;
+}
+
+pub trait RarrayMul<T, V, S> {
+    fn mul(one: T, other: V) -> S;
+}
+
+pub trait RarrayAdd<T, V, S> {
+    fn add(one: T, other: V) -> S;
+}
+
+pub trait RarraySub<T, V, S> {
+    fn sub(one: T, other: V) -> S;
+}
+
+impl RarrayMul<Rarray1D, Rarray2D, Rarray1D> for Rarray2D {
+    fn mul(one: Rarray1D, other: Rarray2D) -> Rarray1D {
+        let mut major = 1;
+        if one.shape.width > one.shape.height {
+            assert_eq!(one.shape.width, other.shape.height, "Rarray shape mismatch");
+            major = one.shape.width;
+        } else {
+            assert_eq!(one.shape.height, other.shape.height, "Rarray shape mismatch");
+            major = one.shape.height;
+        }
+
+        let result = Rarray1D {
+            shape: D1 { width: major, height: 1 },
+            data: vec![0.; major]
+        };
+
+        result
+    }
+}
+
+impl RarrayMul<Rarray2D, Rarray1D, Rarray1D> for Rarray2D {
+    fn mul(one: Rarray2D, other: Rarray1D) -> Rarray1D {
+       other
+    }
+}
+
+impl RarrayMul<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
+    fn mul(one: Rarray2D, other: Rarray2D) -> Rarray2D {
+        one 
+    }
+}
+
+impl RarrayAdd<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
+    fn add(one: Rarray2D, other: Rarray2D) -> Rarray2D {
+        assert_eq!(one.shape.width, other.shape.width, "Rarray shape mismatch");
+        assert_eq!(one.shape.height, other.shape.height, "Rarray shape mismatch");
+
+        let mut result = Rarray2D {
+            shape: one.shape,
+            data: vec![0; one.shape.width * one.shape.height]
+        };
+
+        for i in 0..one.shape.width {
+            for j in 0..one.shape.height {
+                result[[i, j]] = one[[i, j]] + other[[i, j]];
+            }
+        }
+
+        result
+    }
+}
+
+impl RarraySub<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
+    fn sub(one: Rarray2D, other: Rarray2D) -> Rarray2D {
+        assert_eq!(one.shape.width, other.shape.width, "Rarray shape mismatch");
+        assert_eq!(one.shape.height, other.shape.height, "Rarray shape mismatch");
+
+        let mut result = Rarray2D {
+            shape: one.shape,
+            data: vec![0; one.shape.width * one.shape.height]
+        };
+
+        for i in 0..one.shape.width {
+            for j in 0..one.shape.height {
+                result[[i, j]] = one[[i, j]] - other[[i, j]];
+            }
+        }
+
+        result
+    }
+}
