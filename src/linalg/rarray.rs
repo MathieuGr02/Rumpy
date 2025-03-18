@@ -166,5 +166,3 @@ impl RarraySub<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
         result
     }
 }
-
-
