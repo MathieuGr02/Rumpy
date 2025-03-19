@@ -1,73 +1,12 @@
-use core::panic;
-use std::{ops::Index, usize};
-
-// Dimensions
-#[derive(Debug, Clone, Copy)]
-pub struct D1{
-    pub height: usize,
-    pub width: usize
-}
-
-impl Index<usize> for D1 {
-    type Output = usize;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        match index {
-            0 => &self.height,
-            1 => &self.width,
-            _ => panic!("Index out of range")
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct D2{
-    pub height: usize,
-    pub width: usize
-}
-
-impl Index<usize> for D2 {
-    type Output = usize;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        match index {
-            0 => &self.height,
-            1 => &self.width,
-            _ => panic!("Index out of range")
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct D3{
-    pub height: usize,
-    pub width: usize,
-    pub depth: usize
-}
-
-impl Index<usize> for D3 {
-    type Output = usize;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        match index {
-            0 => &self.height,
-            1 => &self.width,
-            2 => &self.depth,
-            _ => panic!("Index out of range")
-        }
-    }
-}
-
-pub trait Dimension {}
-
-impl Dimension for D1 {}
-impl Dimension for D2 {}
-impl Dimension for D3 {}
+use std::fmt::Debug;
+use std::ops::{Add, Sub};
+use std::usize;
+pub(crate) use super::dimension::{Dim, D1, D2, D3};
 
 // Base array struct 
 #[derive(Debug)]
 pub struct Rarray<T, D> {
-    pub(crate) data: Tec<T>,
+    pub(crate) data: Vec<T>,
     pub(crate) shape: D
 }
 
@@ -84,20 +23,21 @@ pub trait RarrayCreate {
 }
 
 pub trait RarrayMul<T, V, S> {
-    fn mul(one: T, other: V) -> S;
+    fn mul(one: &T, other: &V) -> S;
 }
 
 pub trait RarrayAdd<T, V, S> {
-    fn add(one: T, other: V) -> S;
+    fn add(one: &T, other: &V) -> S;
 }
 
 pub trait RarraySub<T, V, S> {
-    fn sub(one: T, other: V) -> S;
+    fn sub(one: &T, other: &V) -> S;
 }
 
 impl RarrayMul<Rarray1D, Rarray2D, Rarray1D> for Rarray2D {
-    fn mul(one: Rarray1D, other: Rarray2D) -> Rarray1D {
-        let mut major = 1;
+    /// Performs (1 x n) x (n x m) matrix multiplication
+    fn mul(one: &Rarray1D, other: &Rarray2D) -> Rarray1D {
+        let mut major: usize = 1;
         if one.shape.width > one.shape.height {
             assert_eq!(one.shape.width, other.shape.height, "Rarray shape mismatch");
             major = one.shape.width;
@@ -106,40 +46,69 @@ impl RarrayMul<Rarray1D, Rarray2D, Rarray1D> for Rarray2D {
             major = one.shape.height;
         }
 
-        let result = Rarray1D {
-            shape: D1 { width: major, height: 1 },
+        let mut result = Rarray1D {
+            shape: D1 { width: one.shape.width, height: 1 },
             data: vec![0.; major]
         };
+
+        for i in 0..one.shape.width {
+            let mut sum: f64 = 0.;
+            for j in 0..major {
+                sum += one[j] * other[[i, j]];
+            }
+            result[i] = sum;
+        }
 
         result
     }
 }
 
 impl RarrayMul<Rarray2D, Rarray1D, Rarray1D> for Rarray2D {
-    fn mul(one: Rarray2D, other: Rarray1D) -> Rarray1D {
-       other
+    /// Performs (n x m) x (m x 1) matrix multiplication
+    fn mul(one: &Rarray2D, other: &Rarray1D) -> Rarray1D {
+        let mut major: usize = 1;
+        if one.shape.width > one.shape.height {
+            assert_eq!(one.shape.width, other.shape.height, "Rarray shape mismatch");
+            major = one.shape.width;
+        } else {
+            assert_eq!(one.shape.height, other.shape.height, "Rarray shape mismatch");
+            major = one.shape.height;
+        }
+
+        let mut result = Rarray1D {
+            shape: D1 { width: one.shape.height, height: 1 },
+            data: vec![0.; major]
+        };
+
+        for i in 0..one.shape.height {
+            let mut sum: f64 = 0.;
+            for j in 0..major {
+                sum += one[[i, j]] * other[j];
+            }
+            result[i] = sum;
+        }
+
+        result
     }
 }
 
 impl RarrayMul<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
-    fn mul(one: Rarray2D, other: Rarray2D) -> Rarray2D {
-        one 
-    }
-}
-
-impl RarrayAdd<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
-    fn add(one: Rarray2D, other: Rarray2D) -> Rarray2D {
-        assert_eq!(one.shape.width, other.shape.width, "Rarray shape mismatch");
-        assert_eq!(one.shape.height, other.shape.height, "Rarray shape mismatch");
+    /// Performs (n x m) x (m x l) matrix multiplication
+    fn mul(one: &Rarray2D, other: &Rarray2D) -> Rarray2D {
+        assert_eq!(one.shape.height, other.shape.width, "Rarray shape mismatch");
 
         let mut result = Rarray2D {
-            shape: one.shape,
-            data: vec![0; one.shape.width * one.shape.height]
+            shape: D2 { height: one.shape.height, width: other.shape.width },
+            data: vec![0.; one.shape.height * other.shape.width]
         };
 
-        for i in 0..one.shape.width {
-            for j in 0..one.shape.height {
-                result[[i, j]] = one[[i, j]] + other[[i, j]];
+        for i in 0..one.shape.height {
+            for j in 0..other.shape.width {
+                let mut sum: f64 = 0.;
+                for k in 0..one.shape.width {
+                    sum += one.data[i * one.shape.width + k] * other.data[j * other.shape.height + k];
+                }
+                result.data[i * result.shape.width + j * result.shape.height] = sum;
             }
         }
 
@@ -147,20 +116,40 @@ impl RarrayAdd<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
     }
 }
 
-impl RarraySub<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
-    fn sub(one: Rarray2D, other: Rarray2D) -> Rarray2D {
-        assert_eq!(one.shape.width, other.shape.width, "Rarray shape mismatch");
-        assert_eq!(one.shape.height, other.shape.height, "Rarray shape mismatch");
+impl<T, D> RarrayAdd<Rarray<T, D>, Rarray<T, D>, Rarray<T, D>> for Rarray<T, D> where
+    T : Copy + Add<Output = T> + Default,
+    D : Copy + Dim + Debug + Eq
+{
+    fn add(one: &Rarray<T, D>, other: &Rarray<T, D>) -> Rarray<T, D> {
+        assert_eq!(one.shape, other.shape, "Rarray shape mismatch");
 
-        let mut result = Rarray2D {
+        let mut result = Rarray {
             shape: one.shape,
-            data: vec![0; one.shape.width * one.shape.height]
+            data: vec![T::default(); one.data.len()]
         };
 
-        for i in 0..one.shape.width {
-            for j in 0..one.shape.height {
-                result[[i, j]] = one[[i, j]] - other[[i, j]];
-            }
+        for i in 0..one.data.len() {
+            result.data[i] = one.data[i] + other.data[i];
+        }
+
+        result
+    }
+}
+
+impl<T, D> RarraySub<Rarray<T, D>, Rarray<T, D>, Rarray<T, D>> for Rarray<T, D> where
+    T : Copy + Sub<Output = T> + Default,
+    D : Copy + Dim + Debug + Eq
+{
+    fn sub(one: &Rarray<T, D>, other: &Rarray<T, D>) -> Rarray<T, D> {
+        assert_eq!(one.shape, other.shape, "Rarray shape mismatch");
+
+        let mut result = Rarray {
+            shape: one.shape,
+            data: vec![T::default(); one.data.len()]
+        };
+
+        for i in 0..one.data.len() {
+            result.data[i] = one.data[i] - other.data[i];
         }
 
         result

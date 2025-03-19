@@ -1,5 +1,8 @@
-use super::rarray::{Rarray, Rarray1D};
+use super::rarray::{Rarray, Rarray1D, RarrayAdd, RarraySub};
 use std::{ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
+use std::fmt::Debug;
+use std::process::Output;
+use crate::linalg::dimension::Dim;
 
 impl<T, D> Rarray<T, D> {
     /// Return shape of array
@@ -9,77 +12,49 @@ impl<T, D> Rarray<T, D> {
     // TODO: Implement following functions
 
     /// Move ownership of array
-    pub fn to_owned() {}
+    pub fn to_owned(self) {}
 }
 
 // Base operations for the Rarray abstract struct
-impl<T, D> Add<&Rarray<T, D>> for &Rarray<T, D> where 
+impl<T, D> Add<&Rarray<T, D>> for &Rarray<T, D> where
     T : Add<Output = T> + Copy + Default,
-    D : Copy
+    D : Copy + Dim + Debug + Eq
 {
     type Output = Rarray<T, D>;
 
     fn add(self, rhs: &Rarray<T, D>) -> Self::Output {
-        assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
-
-        let mut add_rarray = Rarray::<T, D> {
-            shape: self.shape,
-            data: vec![T::default(); self.data.len()] 
-        };
-        
-        for i in 0..self.data.len() {
-            add_rarray.data[i] = self.data[i] + rhs.data[i];
-        }
-
-        add_rarray
+        Rarray::add(self, rhs)
     }
 }
 
 impl<T, D> AddAssign<&Rarray<T, D>> for Rarray<T, D> where 
-    T: AddAssign + Copy + Default
+    T: Add<Output = T> + Copy + Default,
+    D: Copy + Dim + Debug + Eq
 {
     fn add_assign(&mut self, rhs: &Rarray<T, D>) {
-        assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
-
-        for i in 0..self.data.len() {
-            self.data[i] += rhs.data[i]
-        }
+        self.data = Rarray::add(self, rhs).data;
     }
 }
 
 
 impl<T, D> Sub<&Rarray<T, D>> for &Rarray<T, D> where 
     T : Sub<Output = T> + Copy + Default,
-    D : Copy
+    D : Copy + Dim + Debug + Eq
 {
     type Output = Rarray<T, D>;
 
     fn sub(self, rhs: &Rarray<T, D>) -> Self::Output {
-        assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
-
-        let mut sub_rarray = Rarray::<T, D> {
-            shape: self.shape,
-            data: vec![T::default(); self.data.len()] 
-        };
-        
-        for i in 0..self.data.len() {
-            sub_rarray.data[i] = self.data[i] - rhs.data[i];
-        }
-
-        sub_rarray
+        Rarray::sub(self, rhs)
     }
 }
 
 
-impl<T, D> SubAssign<&Rarray<T, D>> for Rarray<T, D> where 
-    T: SubAssign + Copy + Default
+impl<T, D> SubAssign<&Rarray<T, D>> for Rarray<T, D> where
+    T : Sub<Output = T> + Copy + Default,
+    D : Copy + Dim + Debug + Eq
 {
     fn sub_assign(&mut self, rhs: &Rarray<T, D>) {
-        assert_eq!(self.data.len(), rhs.data.len(), "Incompatible dimensions");
-
-        for i in 0..self.data.len() {
-            self.data[i] -= rhs.data[i]
-        }
+        self.data = Rarray::sub(self, rhs).data;
     }
 }
 
