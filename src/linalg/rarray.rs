@@ -1,6 +1,8 @@
 use std::fmt::Debug;
-use std::ops::{Add, Sub};
+use std::ops::{Add, Mul, MulAssign, Sub};
 use std::usize;
+use rand::seq::IndexedRandom;
+
 pub(crate) use super::dimension::{Dim, D1, D2, D3};
 
 // Base array struct 
@@ -24,6 +26,10 @@ pub trait RarrayCreate {
 
 pub trait RarrayMul<T, V, S> {
     fn mul(one: &T, other: &V) -> S;
+}
+
+pub trait RarrayScalMul<T, V> {
+    fn scal_mul(scal: T, rarray: &V) -> V;
 }
 
 pub trait RarrayAdd<T, V, S> {
@@ -110,6 +116,24 @@ impl RarrayMul<Rarray2D, Rarray2D, Rarray2D> for Rarray2D {
                 }
                 result.data[i * result.shape.width + j * result.shape.height] = sum;
             }
+        }
+
+        result
+    }
+}
+
+impl<T, D> RarrayScalMul<T, Rarray<T, D>> for Rarray<T, D> where
+    T: Copy + MulAssign,
+    D : Copy + Dim + Debug,
+{
+    fn scal_mul(scal: T, rarray: &Rarray<T, D>) -> Rarray<T, D> {
+        let mut result = Rarray {
+            shape: rarray.shape.clone(),
+            data: rarray.data.clone()
+        };
+        
+        for i in 0..rarray.data.len() {
+            result.data[i] *= scal;
         }
 
         result
