@@ -1,7 +1,8 @@
 #[cfg(test)]
 mod test {
     use rstest::rstest;
-    use rumpy::linalg::rarray::{self, Rarray1D, RarrayCreate};
+    use rumpy::linalg::rarray::{self, Rarray1D};
+    use rumpy::linalg::rarray::RarrayCreate;
     
     #[rstest]
     #[case(vec![1., 1., 1.])]
@@ -20,16 +21,6 @@ mod test {
     #[case(5, vec![0., 0., 0., 0., 0.])]
     fn rarray1d_zeros(#[case] size: usize, #[case] a: Vec<f64>){
         let zeros_rarray = Rarray1D::zeros(size);
-        for i in 0..zeros_rarray.get_shape()[0]{
-            assert_eq!(zeros_rarray[i], a[i])
-        }
-    }
-
-    #[rstest]
-    #[case(1, vec![1.])]
-    #[case(5, vec![1., 1., 1., 1., 0.])]
-    fn rarray1d_ones(#[case] size: usize, #[case] a: Vec<f64>){
-        let zeros_rarray = Rarray1D::ones(size);
         for i in 0..zeros_rarray.get_shape()[0]{
             assert_eq!(zeros_rarray[i], a[i])
         }

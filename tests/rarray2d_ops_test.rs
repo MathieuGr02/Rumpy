@@ -1,6 +1,7 @@
 mod test{
     use rstest::rstest;
     use rumpy::linalg::rarray::Rarray2D;
+    use rumpy::linalg::rarray::RarrayCreate;
 
     #[rstest]
     #[case(vec![vec![1., 1.], vec![1., 1.,]])]
