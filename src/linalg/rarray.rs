@@ -17,11 +17,12 @@ pub type Rarray1D = Rarray<f64, D1>;
 pub type Rarray2D = Rarray<f64, D2>;
 pub type Rarray3D = Rarray<f64, D3>;
 
-pub trait RarrayCreate {
-    fn new<T, V>(data: T) -> V;
-    fn zeros<T, V>(shape: T) -> V;
-    fn ones<T, V>(shape: T) -> V;
-    fn random<T, V>(shape: T) -> V;
+pub trait RarrayCreate<T, V> {
+    fn new(data: &Vec<V>) -> Self;
+    fn zeros(shape: T) -> Self;
+    fn ones(shape: T) -> Self;
+    fn random(shape: T) -> Self;
+    fn fill(value: V, shape: T) -> Self;
 }
 
 pub trait RarrayMul<T, V, S> {

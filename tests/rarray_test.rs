@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test {
     use rstest::rstest;
-    use rumpy::linalg::rarray::Rarray1D;
+    use rumpy::linalg::rarray::{Rarray1D, RarrayCreate};
 
     #[rstest]
     #[case(vec![1.], vec![1.], vec![2.])]

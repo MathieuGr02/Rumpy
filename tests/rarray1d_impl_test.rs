@@ -1,6 +1,7 @@
 mod test {
+    use std::ptr::read;
     use rstest::rstest;
-    use rumpy::linalg::rarray::Rarray1D;
+    use rumpy::linalg::rarray::{Rarray1D, RarrayCreate};
 
     #[rstest]
     #[case(vec![1., 2., 3.], 0, 1.)]
@@ -51,5 +52,15 @@ mod test {
         for i in 0..(rarray.get_shape()[0]){
             assert_eq!(rarray[i], result[i]); 
         }
+    }
+
+    #[rstest]
+    #[case(vec![1., 1., 1.], vec![1., 1., 1.], 3.)]
+    fn rarray1d_dot(#[case] a: Vec<f64>, #[case] b: Vec<f64>, #[case] result: f64){
+        let rarray_a = Rarray1D::new(&a).transpose();
+        let rarray_b = Rarray1D::new(&b);
+        let rarray_dot = &rarray_a * &rarray_b;
+        println!("Result : {:?}", result);
+        assert_eq!(rarray_dot, result);
     }
 }
