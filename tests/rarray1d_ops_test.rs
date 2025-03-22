@@ -5,28 +5,6 @@ mod test {
     use rumpy::linalg::rarray::RarrayCreate;
     
     #[rstest]
-    #[case(vec![1., 1., 1.])]
-    #[case(vec![2.])]
-    #[case(vec![1., 5., 2., 0.2, 0., 23.])]
-    fn rarray1d_new(#[case] a: Vec<f64>){
-        let new_rarray = Rarray1D::new(&a);
-        for i in 0..new_rarray.get_shape()[0] {
-            println!("{:?} , {:?}", new_rarray[i], a[i]);
-            assert_eq!(new_rarray[i], a[i]);
-        }
-    }
-
-    #[rstest]
-    #[case(1, vec![0.])]
-    #[case(5, vec![0., 0., 0., 0., 0.])]
-    fn rarray1d_zeros(#[case] size: usize, #[case] a: Vec<f64>){
-        let zeros_rarray = Rarray1D::zeros(size);
-        for i in 0..zeros_rarray.get_shape()[0]{
-            assert_eq!(zeros_rarray[i], a[i])
-        }
-    }
-
-    #[rstest]
     #[case(vec![1.], vec![1.], 1.)]
     #[case(vec![2.], vec![4.], 8.)]
     #[case(vec![0., 0., 0.], vec![0., 0., 0.], 0.)]

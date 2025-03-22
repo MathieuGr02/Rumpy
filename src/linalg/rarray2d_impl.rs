@@ -151,3 +151,29 @@ impl RarrayCreate<(usize, usize), Vec<Vec<f64>>, f64> for Rarray2D {
         } 
     }
 }
+
+impl Rarray2D {
+    /// Create 2D matrix of shape `m x n` filled with `value`
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use rumpy::linalg::rarray::Rarray2D;
+    ///
+    /// let m = Rarray2D::ones(3);
+    /// println!("{}", m);
+    /// // >> Rarray2D([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
+    /// ```
+    pub fn ones(shape: usize) -> Self {
+        let mut result = Rarray2D {
+            shape: D2 { height: shape, width: shape },
+            data: vec![0.; shape * shape]
+        };
+
+        for i in 0..shape {
+            result.data[shape * i + i] = 1.
+        }
+
+        result
+    }
+}
