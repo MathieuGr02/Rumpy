@@ -1,23 +1,22 @@
 use super::rarray::{Rarray, Rarray1D, RarrayAdd, RarraySub};
 use std::{ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
 use std::fmt::Debug;
-use std::process::Output;
+use std::ops::Neg;
 use crate::linalg::dimension::Dim;
+use crate::linalg::numeric_trait::Numeric;
 
-impl<T, D> Rarray<T, D> {
+impl<T, D> Rarray<T, D> where
+    D: Dim
+{
     /// Return shape of array
     pub fn get_shape(&self) -> &D {
         &self.shape
     }
-    // TODO: Implement following functions
-
-    /// Move ownership of array
-    pub fn to_owned(self) {}
 }
 
 // Base operations for the Rarray abstract struct
 impl<T, D> Add<&Rarray<T, D>> for &Rarray<T, D> where
-    T : Add<Output = T> + Copy + Default,
+    T : Numeric,
     D : Copy + Dim + Debug + Eq
 {
     type Output = Rarray<T, D>;
@@ -28,7 +27,7 @@ impl<T, D> Add<&Rarray<T, D>> for &Rarray<T, D> where
 }
 
 impl<T, D> AddAssign<&Rarray<T, D>> for Rarray<T, D> where 
-    T: Add<Output = T> + Copy + Default,
+    T: Numeric,
     D: Copy + Dim + Debug + Eq
 {
     fn add_assign(&mut self, rhs: &Rarray<T, D>) {
@@ -38,7 +37,7 @@ impl<T, D> AddAssign<&Rarray<T, D>> for Rarray<T, D> where
 
 
 impl<T, D> Sub<&Rarray<T, D>> for &Rarray<T, D> where 
-    T : Sub<Output = T> + Copy + Default,
+    T : Numeric,
     D : Copy + Dim + Debug + Eq
 {
     type Output = Rarray<T, D>;
@@ -50,7 +49,7 @@ impl<T, D> Sub<&Rarray<T, D>> for &Rarray<T, D> where
 
 
 impl<T, D> SubAssign<&Rarray<T, D>> for Rarray<T, D> where
-    T : Sub<Output = T> + Copy + Default,
+    T : Numeric,
     D : Copy + Dim + Debug + Eq
 {
     fn sub_assign(&mut self, rhs: &Rarray<T, D>) {

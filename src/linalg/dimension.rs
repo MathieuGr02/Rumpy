@@ -29,7 +29,7 @@ impl PartialEq<Self> for D1 {
     }
 
     fn ne(&self, other: &Self) -> bool {
-        self.width == other.width || self.height == other.height
+        self.width != other.width || self.height != other.height
     }
 }
 
@@ -60,7 +60,7 @@ impl PartialEq<Self> for D2 {
     }
 
     fn ne(&self, other: &Self) -> bool {
-        self.width == other.width || self.height == other.height
+        self.width != other.width || self.height != other.height
     }
 }
 
@@ -93,7 +93,7 @@ impl PartialEq<Self> for D3 {
     }
 
     fn ne(&self, other: &Self) -> bool {
-        self.width == other.width || self.height == other.height || self.depth == other.depth
+        self.width != other.width || self.height != other.height || self.depth != other.depth
     }
 }
 
