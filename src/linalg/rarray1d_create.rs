@@ -1,5 +1,4 @@
 use std::cmp::max;
-use num_traits::Num;
 use crate::linalg::dimension::{D1, D2};
 use crate::linalg::numeric_trait::Numeric;
 use crate::linalg::rarray::{Rarray1D, Rarray2D, RarrayCreate};
@@ -35,37 +34,13 @@ impl<T> RarrayCreate<usize, Vec<T>, T> for Rarray1D<T> where
     ///use rumpy::linalg::rarray::Rarray1D;
     ///use crate::rumpy::linalg::rarray::RarrayCreate;
     ///
-    /// let v = Rarray1D::zeros(3);
+    /// let v = Rarray1D::<f64>::zeros(3);
     /// println!("{}", v);
     /// ```
     fn zeros(shape: usize) -> Self {
         Rarray1D {
             shape: D1 { width: shape, height: 1},
             data: vec![T::default(); shape]
-        }
-    }
-
-    /// Create rarray1D vector of length `shape` filled with random numbers
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use rumpy::linalg::rarray::Rarray1D;
-    /// use crate::rumpy::linalg::rarray::RarrayCreate;
-    ///
-    /// let v = Rarray1D::random(3);
-    /// println!("{}", v);
-    /// ```
-    fn random(shape: usize) -> Self {
-        let mut data = Vec::<T>::with_capacity(shape);
-        for _ in 0..shape {
-            data.push(rand::random::<T>());
-        }
-
-
-        Rarray1D {
-            shape: D1 { width: shape, height: 1 },
-            data
         }
     }
 
@@ -127,7 +102,7 @@ impl<T> RarrayCreate<(usize, usize), Vec<Vec<T>>, T> for Rarray1D<T> where
     /// use rumpy::linalg::rarray::Rarray1D;
     /// use crate::rumpy::linalg::rarray::RarrayCreate;
     ///
-    ///let v = Rarray1D::zeros((3, 1));
+    ///let v = Rarray1D::<f64>::zeros((3, 1));
     /// println!("{}", v);
     /// ```
     ///
@@ -139,34 +114,6 @@ impl<T> RarrayCreate<(usize, usize), Vec<Vec<T>>, T> for Rarray1D<T> where
         Rarray1D {
             shape: D1 { width: shape.1, height: shape.0},
             data: vec![T::default(); shape.0 * shape.1]
-        }
-    }
-
-    /// Create vector of shape` filled with random numbers
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use rumpy::linalg::rarray::Rarray1D;
-    /// use crate::rumpy::linalg::rarray::RarrayCreate;
-    ///
-    /// let v = Rarray1D::random((3, 1));
-    /// println!("{}", v);
-    /// ```
-    /// # Panics
-    ///
-    /// If (x, y) with x > 1 and y > 1
-    fn random(shape: (usize, usize)) -> Self {
-        assert!(shape.0 == 1 || shape.1 == 1, "Cannot create 2D array using 1D array type");
-        let mut data = Vec::<T>::with_capacity(shape.0 * shape.1);
-        for _ in 0..(shape.0 * shape.1) {
-            data.push(rand::random::<T>());
-        }
-
-
-        Rarray1D {
-            shape: D1 { width: shape.1, height: shape.0 },
-            data
         }
     }
 
@@ -224,6 +171,7 @@ impl<T> Rarray1D<T> where
         result
     }
 
+
     /// Create vector filled with values in given range with step size
     ///
     /// # Examples
@@ -243,7 +191,7 @@ impl<T> Rarray1D<T> where
         };
 
         for i in (start..stop).step_by(step) {
-            result.data.push(i);
+            result.data.push(T::from(i as i32));
         }
 
         result

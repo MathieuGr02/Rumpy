@@ -5,15 +5,13 @@ use std::ops::Neg;
 use crate::linalg::dimension::Dim;
 use crate::linalg::numeric_trait::Numeric;
 
-impl<T, D> Rarray<T, D> {
+impl<T, D> Rarray<T, D> where
+    D: Dim
+{
     /// Return shape of array
     pub fn get_shape(&self) -> &D {
         &self.shape
     }
-    // TODO: Implement following functions
-
-    /// Move ownership of array
-    pub fn to_owned(self) {}
 }
 
 // Base operations for the Rarray abstract struct

@@ -5,8 +5,6 @@
 
 use core::fmt;
 use std::ops::{Index, IndexMut, Mul, MulAssign};
-use num_traits::Num;
-use crate::linalg::dimension::D1;
 use crate::linalg::numeric_trait::Numeric;
 use super::rarray::{Rarray, Rarray1D, RarrayCreate, RarrayScalMul};
 
@@ -67,7 +65,9 @@ impl<T> Mul<&Rarray1D<T>> for &Rarray1D<T>
     }
 }
 
-impl<T> fmt::Display for Rarray1D<T> {
+impl<T> fmt::Display for Rarray1D<T> where
+    T: Numeric
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut formatted_string: String = String::new();
         for i in 0..self.shape.width {

@@ -5,7 +5,6 @@
 
 use core::fmt;
 use std::ops::{Mul, MulAssign, Index, IndexMut};
-use num_traits::Num;
 use crate::linalg::numeric_trait::Numeric;
 use super::rarray::{Rarray2D, RarrayCreate, RarrayMul, D2};
 
@@ -25,7 +24,9 @@ impl<T> IndexMut<[usize; 2]> for Rarray2D<T> {
     }
 }
 
-impl<T> Mul<&Rarray2D<T>> for &Rarray2D<T> {
+impl<T> Mul<&Rarray2D<T>> for &Rarray2D<T> where 
+    T: Numeric
+{
     type Output = Rarray2D<T>;
 
     fn mul(self, rhs: &Rarray2D<T>) -> Self::Output {
@@ -41,7 +42,9 @@ impl<T> MulAssign<&Rarray2D<T>> for Rarray2D<T> where
     }
 }
 
-impl<T> fmt::Display for Rarray2D<T> {
+impl<T> fmt::Display for Rarray2D<T> where 
+    T: Numeric
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut formatted_string: String = String::new();
         for i in 0..self.shape.height {
@@ -112,30 +115,6 @@ impl<T> RarrayCreate<(usize, usize), Vec<Vec<T>>, T> for Rarray2D<T> where
             data: vec![T::default(); shape.0 * shape.1]
         } 
     }
-
-    /// Create 2D matrix of shape `m x n` filled with random numbers
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use rumpy::linalg::rarray::Rarray2D;
-    /// use crate::rumpy::linalg::rarray::RarrayCreate;
-    ///
-    /// let m = Rarray2D::random((3, 3));
-    /// println!("{}", m);
-    /// // >> Rarray2D([])
-    /// ```
-    fn random(shape: (usize, usize)) -> Self {
-        let mut data = Vec::<T>::with_capacity(shape.0 * shape.1);
-        for _ in 0..(shape.0 * shape.1) {
-            data.push(rand::random::<T>());
-        }
-
-        Rarray2D {
-            shape: D2 { height: shape.0, width: shape.1 },
-            data
-        }
-    }
     
     /// Create 2D matrix of shape `m x n` filled with `value`
     ///
@@ -167,7 +146,7 @@ impl<T> Rarray2D<T> where
     /// ```
     /// use rumpy::linalg::rarray::Rarray2D;
     ///
-    /// let m = Rarray2D::ones(3);
+    /// let m = Rarray2D::<f64>::ones(3);
     /// println!("{}", m);
     /// // >> Rarray2D([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
     /// ```
@@ -178,7 +157,7 @@ impl<T> Rarray2D<T> where
         };
 
         for i in 0..shape {
-            result.data[shape * i + i];
+            result.data[shape * i + i] = T::from(1);
         }
 
         result

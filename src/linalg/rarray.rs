@@ -1,14 +1,13 @@
 use std::fmt::Debug;
-use std::ops::{Add, AddAssign, Mul, MulAssign, Sub};
+use std::ops::Neg;
 use std::usize;
-use num_traits::Num;
-use rand::seq::IndexedRandom;
 use crate::linalg::numeric_trait::Numeric;
 pub(crate) use super::dimension::{Dim, D1, D2, D3};
 
-// Base array struct 
+/// Base array struct
+/// Consists of data field which is a 1 dimensional `Vec<T>` and of a shape field which is of type `Dim`
 #[derive(Debug)]
-pub struct Rarray<T, D> {
+pub struct Rarray<T, D: Dim> {
     pub(crate) data: Vec<T>,
     pub(crate) shape: D
 }
@@ -21,7 +20,6 @@ pub type Rarray3D<T> = Rarray<T, D3>;
 pub trait RarrayCreate<T, V, S> {
     fn new(data: &V) -> Self;
     fn zeros(shape: T) -> Self;
-    fn random(shape: T) -> Self;
     fn fill(value: S, shape: T) -> Self;
 }
 

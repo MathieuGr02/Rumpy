@@ -1,11 +1,9 @@
-use std::cmp::max;
-use std::iter::zip;
-use std::ops::AddAssign;
-use num_traits::Num;
 use crate::linalg::numeric_trait::Numeric;
-use super::rarray::{Rarray1D, Rarray2D, RarrayCreate, D1, D2};
+use super::rarray::{Rarray1D, Rarray2D, D1, D2};
 
-impl<T> Rarray1D<T> {
+impl<T> Rarray1D<T> where 
+    T: Numeric
+{
     /// Tranpose 1D matrix
     pub fn transpose(&self) -> Self {
         Rarray1D {
@@ -89,13 +87,13 @@ impl<T> Rarray1D<T> where
         result
     }
 
+    /*
     /// Sum values of array
     pub fn sum(&self) -> T {
         self.data.iter().sum()
     }
    
     // TODO: yet to implement functionality
-    /*
     pub fn unique(&self) -> Rarray1D {
         
     }
