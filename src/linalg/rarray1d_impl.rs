@@ -5,12 +5,13 @@
 
 use core::fmt;
 use std::ops::{Index, IndexMut, Mul, MulAssign};
-
+use num_traits::Num;
 use crate::linalg::dimension::D1;
+use crate::linalg::numeric_trait::Numeric;
 use super::rarray::{Rarray, Rarray1D, RarrayCreate, RarrayScalMul};
 
-impl Index<usize> for Rarray1D {
-    type Output = f64;
+impl<T> Index<usize> for Rarray1D<T> {
+    type Output = T;
 
     fn index(&self, index: usize) -> &Self::Output {
         if self.shape[0] < self.shape[1] {
@@ -24,8 +25,8 @@ impl Index<usize> for Rarray1D {
     }
 }
 
-impl IndexMut<usize> for Rarray1D {
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+impl<T> IndexMut<usize> for Rarray1D<T> {
+    fn index_mut(&mut self, index: usize) -> &mut T {
         if self.shape[0] < self.shape[1] {
             assert!(index < self.shape[1], "Index out of bounds");
         } 
@@ -37,31 +38,37 @@ impl IndexMut<usize> for Rarray1D {
     }
 }
 
-impl Mul<f64> for &Rarray1D {
-    type Output = Rarray1D;
+impl<T> Mul<T> for &Rarray1D<T> where
+    T: Numeric
+{
+    type Output = Rarray1D<T>;
 
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: T) -> Self::Output {
         Rarray::scal_mul(rhs, self)
     }
 }
 
-impl MulAssign<f64> for Rarray1D {
-    fn mul_assign(&mut self, rhs: f64) {
+impl<T> MulAssign<T> for Rarray1D<T> where
+    T: Numeric
+{
+    fn mul_assign(&mut self, rhs: T) {
         self.data = Rarray::scal_mul(rhs, self).data;
     }
 }
 
-impl Mul<&Rarray1D> for &Rarray1D {
-    type Output = f64;
+impl<T> Mul<&Rarray1D<T>> for &Rarray1D<T>
+    where T: Numeric
+{
+    type Output = T;
 
-    fn mul(self, rhs: &Rarray1D) -> Self::Output {
+    fn mul(self, rhs: &Rarray1D<T>) -> Self::Output {
         assert_eq!(self.shape.width, rhs.shape.height, "Rarray shape mismatch");
         Rarray1D::dot(self, rhs)
     }
 }
 
-impl fmt::Display for Rarray1D {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl<T> fmt::Display for Rarray1D<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut formatted_string: String = String::new();
         for i in 0..self.shape.width {
             formatted_string.push_str(&self.data[i].to_string());

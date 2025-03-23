@@ -1,9 +1,13 @@
 use std::cmp::max;
+use num_traits::Num;
 use crate::linalg::dimension::{D1, D2};
+use crate::linalg::numeric_trait::Numeric;
 use crate::linalg::rarray::{Rarray1D, Rarray2D, RarrayCreate};
 
 // Creation
-impl RarrayCreate<usize, Vec<f64>, f64> for Rarray1D {
+impl<T> RarrayCreate<usize, Vec<T>, T> for Rarray1D<T> where
+    T: Numeric
+{
     /// Create rarray1D vector using Vec
     ///
     /// # Examples
@@ -12,16 +16,17 @@ impl RarrayCreate<usize, Vec<f64>, f64> for Rarray1D {
     /// use rumpy::linalg::rarray::Rarray1D;
     /// use crate::rumpy::linalg::rarray::RarrayCreate;
     ///
-    /// let v = Rarray1D::new(&vec![1., 1., 1.]);
+    /// let v = Rarray1D::<f64>::new(&vec![1., 1., 1.]);
     /// println!("{}", v);
     /// ```
-    fn new(data: &Vec<f64>) -> Self {
+    fn new(data: &Vec<T>) -> Self {
         Rarray1D {
-            shape : D1 { width: data.len() as usize, height: 1 },
+            shape : D1 { width: data.len(), height: 1 },
             data: data.clone()
         }
     }
 
+    //TODO: Constraint to numeric values
     /// Create rarra1d vector of length `shape` filled with zeros
     ///
     /// # Examples
@@ -36,7 +41,7 @@ impl RarrayCreate<usize, Vec<f64>, f64> for Rarray1D {
     fn zeros(shape: usize) -> Self {
         Rarray1D {
             shape: D1 { width: shape, height: 1},
-            data: vec![0.; shape]
+            data: vec![T::default(); shape]
         }
     }
 
@@ -52,9 +57,9 @@ impl RarrayCreate<usize, Vec<f64>, f64> for Rarray1D {
     /// println!("{}", v);
     /// ```
     fn random(shape: usize) -> Self {
-        let mut data = Vec::<f64>::with_capacity(shape);
+        let mut data = Vec::<T>::with_capacity(shape);
         for _ in 0..shape {
-            data.push(rand::random::<f64>());
+            data.push(rand::random::<T>());
         }
 
 
@@ -75,7 +80,7 @@ impl RarrayCreate<usize, Vec<f64>, f64> for Rarray1D {
     /// let v = Rarray1D::fill(4., 3);
     /// println!("{}", v);
     /// ```
-    fn fill(value: f64, shape: usize) -> Self {
+    fn fill(value: T, shape: usize) -> Self {
         Rarray1D {
             shape: D1 { width: shape, height: 1},
             data: vec![value; shape]
@@ -83,7 +88,9 @@ impl RarrayCreate<usize, Vec<f64>, f64> for Rarray1D {
     }
 }
 
-impl RarrayCreate<(usize, usize), Vec<Vec<f64>>, f64> for Rarray1D {
+impl<T> RarrayCreate<(usize, usize), Vec<Vec<T>>, T> for Rarray1D<T> where
+    T: Numeric
+{
     /// Create vector using Vec<Vec>
     ///
     /// # Examples
@@ -92,14 +99,14 @@ impl RarrayCreate<(usize, usize), Vec<Vec<f64>>, f64> for Rarray1D {
     /// use rumpy::linalg::rarray::Rarray1D;
     /// use crate::rumpy::linalg::rarray::RarrayCreate;
     ///
-    /// let v = Rarray1D::new(&vec![vec![0.], vec![0.], vec![0.]]);
+    /// let v = Rarray1D::<f64>::new(&vec![vec![0.], vec![0.], vec![0.]]);
     /// println!("{}", v);
     /// ```
     ///
     /// # Panics
     ///
     /// If rows aren't of same length
-    fn new(data: &Vec<Vec<f64>>) -> Self {
+    fn new(data: &Vec<Vec<T>>) -> Self {
         let row = data.len();
         let col = data[0].len();
         for i in 0..row {
@@ -131,7 +138,7 @@ impl RarrayCreate<(usize, usize), Vec<Vec<f64>>, f64> for Rarray1D {
         assert!(shape.0 == 1 || shape.1 == 1, "Cannot create 2D array using 1D array type");
         Rarray1D {
             shape: D1 { width: shape.1, height: shape.0},
-            data: vec![0.; shape.0 * shape.1]
+            data: vec![T::default(); shape.0 * shape.1]
         }
     }
 
@@ -151,9 +158,9 @@ impl RarrayCreate<(usize, usize), Vec<Vec<f64>>, f64> for Rarray1D {
     /// If (x, y) with x > 1 and y > 1
     fn random(shape: (usize, usize)) -> Self {
         assert!(shape.0 == 1 || shape.1 == 1, "Cannot create 2D array using 1D array type");
-        let mut data = Vec::<f64>::with_capacity(shape.0 * shape.1);
+        let mut data = Vec::<T>::with_capacity(shape.0 * shape.1);
         for _ in 0..(shape.0 * shape.1) {
-            data.push(rand::random::<f64>());
+            data.push(rand::random::<T>());
         }
 
 
@@ -171,13 +178,13 @@ impl RarrayCreate<(usize, usize), Vec<Vec<f64>>, f64> for Rarray1D {
     /// use rumpy::linalg::rarray::Rarray1D;
     /// use crate::rumpy::linalg::rarray::RarrayCreate;
     ///
-    /// let v = Rarray1D::fill(4., (3, 1));
+    /// let v = Rarray1D::<f64>::fill(4., (3, 1));
     /// println!("{}", v);
     /// ```
     /// # Panics
     ///
     /// If (x, y) with x > 1 and y > 1
-    fn fill(value: f64, shape: (usize, usize)) -> Self {
+    fn fill(value: T, shape: (usize, usize)) -> Self {
         assert!(shape.0 == 1 || shape.1 == 1, "Cannot create 2D array using 1D array type");
         Rarray1D {
             shape: D1 { width: shape.1, height: shape.0},
@@ -186,7 +193,9 @@ impl RarrayCreate<(usize, usize), Vec<Vec<f64>>, f64> for Rarray1D {
     }
 }
 
-impl Rarray1D {
+impl<T> Rarray1D<T> where
+    T: Numeric
+{
     /// Create matrix where given vector are the diagonal elements
     ///
     /// # Examples
@@ -200,12 +209,12 @@ impl Rarray1D {
     /// println!("{}", res);
     /// // >> Rarray2D([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
     /// ```
-    pub fn diag(&self) -> Rarray2D {
+    pub fn diag(&self) -> Rarray2D<T> {
         let major = max(self.shape.height, self.shape.width);
 
         let mut result = Rarray2D {
             shape: D2 { height: major, width: major},
-            data: vec![0.; major * major]
+            data: vec![T::default(); major * major]
         };
 
         for i in 0..major {
@@ -222,19 +231,19 @@ impl Rarray1D {
     /// ```
     /// use rumpy::linalg::rarray::Rarray1D;
     ///
-    /// let a = Rarray1D::range(0, 10, 2);
+    /// let a = Rarray1D::<f64>::range(0, 10, 2);
     /// println!("{}", a);
     /// // >> Rarray1D([0., 2., 4., 6., 8.])
     /// ```
-    pub fn range(start: usize, stop: usize, step: usize) -> Rarray1D {
+    pub fn range(start: usize, stop: usize, step: usize) -> Rarray1D<T> {
         let shape = (stop - start) / step;
         let mut result = Rarray1D {
             shape: D1 { height: 1, width: shape },
-            data: Vec::<f64>::with_capacity(shape)
+            data: Vec::<T>::with_capacity(shape)
         };
 
         for i in (start..stop).step_by(step) {
-            result.data.push(i as f64);
+            result.data.push(i);
         }
 
         result
