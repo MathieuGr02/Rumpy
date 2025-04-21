@@ -1,10 +1,9 @@
-use std::iter::zip;
 use std::ops::Index;
 
 /// Dimension structs
 /// Each dimension struct has its side lengths and an index trait.
 
-// 1D struct. Has height and width, because of vector transposition.
+/// 1D struct. Has height and width, because of vector transposition.
 #[derive(Debug, Clone, Copy)]
 pub struct D1 {
     pub height: usize,

@@ -1,5 +1,7 @@
+use std::cmp::max;
+
 use crate::linalg::numeric_trait::Numeric;
-use super::rarray::{Rarray1D, Rarray2D, D1, D2};
+use super::rarray::{Rarray1D, Rarray2D, RarrayCreate, D1, D2};
 
 impl<T> Rarray1D<T> where 
     T: Numeric
@@ -100,10 +102,6 @@ impl<T> Rarray1D<T> where
 
     pub fn unique_index(&self) -> Rarray1D {
 
-    }
-
-    pub fn diag(&self) -> Rarray2D {
-    
     }
     */
 }

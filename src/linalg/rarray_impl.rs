@@ -1,7 +1,6 @@
-use super::rarray::{Rarray, Rarray1D, RarrayAdd, RarraySub};
-use std::{ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign}, usize};
+use super::rarray::{Rarray, RarrayAdd, RarraySub};
+use std::ops::{Add, AddAssign, Sub, SubAssign};
 use std::fmt::Debug;
-use std::ops::Neg;
 use crate::linalg::dimension::Dim;
 use crate::linalg::numeric_trait::Numeric;
 

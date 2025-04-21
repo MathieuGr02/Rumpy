@@ -172,7 +172,7 @@ impl<T> Rarray1D<T> where
     }
 
 
-    /// Create vector filled with values in given range with step size
+    /// Create vector filled with values in given exclusive range `[start, stop)` with step size.
     ///
     /// # Examples
     ///
@@ -183,15 +183,26 @@ impl<T> Rarray1D<T> where
     /// println!("{}", a);
     /// // >> Rarray1D([0., 2., 4., 6., 8.])
     /// ```
-    pub fn range(start: usize, stop: usize, step: usize) -> Rarray1D<T> {
-        let shape = (stop - start) / step;
+    pub fn range(start: i32, stop: i32, step: i32) -> Rarray1D<T> {
+        assert!(step != 0, "Invalid step. Step cannot be zero");
+
+        if start < stop {
+            assert!(step > 0, "Invalid step for start < stop");
+        }
+        else if start > stop {
+            assert!(step < 0, "Invalid step for start > stop");
+        }
+
+        let shape = ((stop - start) / step).abs() as usize;
+        
         let mut result = Rarray1D {
-            shape: D1 { height: 1, width: shape },
-            data: Vec::<T>::with_capacity(shape)
+            shape: D1 { height: 1, width: shape as usize },
+            data: Vec::<T>::with_capacity(shape as usize)
         };
 
-        for i in (start..stop).step_by(step) {
-            result.data.push(T::from(i as i32));
+        for i in 0..shape {
+            let val = start + (i as i32) * step;
+            result.data.push(T::from(val));
         }
 
         result
