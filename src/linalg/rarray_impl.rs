@@ -1,4 +1,5 @@
 use super::rarray::{Rarray, RarrayAdd, RarraySub};
+use std::iter::zip;
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 use std::fmt::Debug;
 use crate::linalg::dimension::Dim;
@@ -57,3 +58,25 @@ impl<T, D> SubAssign<&Rarray<T, D>> for Rarray<T, D> where
 }
 
 
+impl<T, D> PartialEq for Rarray<T, D> where
+    T: Numeric + PartialEq,
+    D: Dim + Eq 
+{
+    fn eq(&self, other: &Self) -> bool {
+        if self.shape != other.shape {
+            return false;
+        }
+
+        for (x, y) in zip(&self.data, &other.data) {
+            if x != y {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        !self.eq(other)
+    }
+}

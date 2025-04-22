@@ -1,5 +1,4 @@
-use std::{fmt::Debug, iter::zip};
-use std::ops::Neg;
+use std::fmt::Debug;
 use std::usize;
 use crate::linalg::numeric_trait::Numeric;
 pub(crate) use super::dimension::{Dim, D1, D2, D3};
@@ -44,7 +43,7 @@ impl<T> RarrayMul<Rarray1D<T>, Rarray2D<T>, Rarray1D<T>> for Rarray2D<T> where
 {
     /// Performs (1 x n) x (n x m) matrix multiplication
     fn mul(one: &Rarray1D<T>, other: &Rarray2D<T>) -> Rarray1D<T> {
-        let mut major: usize = 1;
+        let major: usize;
         if one.shape.width > one.shape.height {
             assert_eq!(one.shape.width, other.shape.height, "Rarray shape mismatch");
             major = one.shape.width;
@@ -73,7 +72,7 @@ impl<T> RarrayMul<Rarray2D<T>, Rarray1D<T>, Rarray1D<T>> for Rarray2D<T> where
 {
     /// Performs (n x m) x (m x 1) matrix multiplication
     fn mul(one: &Rarray2D<T>, other: &Rarray1D<T>) -> Rarray1D<T> {
-        let mut major: usize = 1;
+        let major: usize;
         if one.shape.width > one.shape.height {
             assert_eq!(one.shape.width, other.shape.height, "Rarray shape mismatch");
             major = one.shape.width;
@@ -176,28 +175,5 @@ impl<T, D> RarraySub<Rarray<T, D>, Rarray<T, D>, Rarray<T, D>> for Rarray<T, D> 
         }
 
         result
-    }
-}
-
-impl<T, D> PartialEq for Rarray<T, D> where
-    T: Numeric + PartialEq,
-    D: Dim + Eq 
-{
-    fn eq(&self, other: &Self) -> bool {
-        if self.shape != other.shape {
-            return false;
-        }
-
-        for (x, y) in zip(&self.data, &other.data) {
-            if x != y {
-                return false;
-            }
-        }
-
-        true
-    }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.eq(other)
     }
 }

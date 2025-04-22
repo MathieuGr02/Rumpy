@@ -6,7 +6,7 @@
 use core::fmt;
 use std::ops::{Index, IndexMut, Mul, MulAssign};
 use crate::linalg::numeric_trait::Numeric;
-use super::rarray::{Rarray, Rarray1D, RarrayCreate, RarrayScalMul};
+use super::rarray::{Rarray, Rarray1D, RarrayScalMul};
 
 impl<T> Index<usize> for Rarray1D<T> {
     type Output = T;
