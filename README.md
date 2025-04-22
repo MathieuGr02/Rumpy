@@ -8,23 +8,10 @@
 
 --- 
 
+[![Build Status](https://github.com/MathieuGr02/Rumpy/actions/workflows/rust.yml/badge.svg)](https://github.com/MathieuGr02/Rumpy/actions)
+[![License Info](http://img.shields.io/badge/license-The%20MIT%20License-brightgreen.svg)](https://github.com/MathieuGr02/Rumpy/blob/main/LICENSE)
+
 Science based rust library. Name relates to numpy library for Python.
-
-# TODO
-
-- [ ] Add basic array implementation
-  - [ ] 1D Array
-  - [ ] 2D Array
-  - [ ] ND Array
-- [ ] Datastructures
-  - [ ] Arrays
-  - [ ] Binary trees
-  - [ ] Stacks
-  - [ ] Queues
-- [ ] Algorithms
-  - [ ] Sorting
-  - [ ] Specific algoriothms related to datastructures
-
 
 # Disclaimer
 

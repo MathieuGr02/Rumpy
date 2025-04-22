@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, iter::zip};
 use std::ops::Neg;
 use std::usize;
 use crate::linalg::numeric_trait::Numeric;
@@ -176,5 +176,28 @@ impl<T, D> RarraySub<Rarray<T, D>, Rarray<T, D>, Rarray<T, D>> for Rarray<T, D> 
         }
 
         result
+    }
+}
+
+impl<T, D> PartialEq for Rarray<T, D> where
+    T: Numeric + PartialEq,
+    D: Dim + Eq 
+{
+    fn eq(&self, other: &Self) -> bool {
+        if self.shape != other.shape {
+            return false;
+        }
+
+        for (x, y) in zip(&self.data, &other.data) {
+            if x != y {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        !self.eq(other)
     }
 }

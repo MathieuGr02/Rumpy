@@ -3,6 +3,7 @@ use crate::linalg::dimension::{D1, D2};
 use crate::linalg::numeric_trait::Numeric;
 use crate::linalg::rarray::{Rarray1D, Rarray2D, RarrayCreate};
 
+
 // Creation
 impl<T> RarrayCreate<usize, Vec<T>, T> for Rarray1D<T> where
     T: Numeric
