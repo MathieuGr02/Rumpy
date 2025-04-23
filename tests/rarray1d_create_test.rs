@@ -25,6 +25,15 @@ mod test {
     }
 
     #[rstest]
+    #[case(vec![vec![1., 1.], vec![1.], vec![1.]])]
+    #[case(vec![vec![1.], vec![1., 1.], vec![1.]])]
+    #[case(vec![vec![1.], vec![1.], vec![1., 1.]])]
+    #[should_panic]
+    fn rarry1d_new_diff_col_size(#[case] a: Vec<Vec<f64>>) {
+        let _ = Rarray1D::<f64>::new(&a);
+    }
+
+    #[rstest]
     #[case(3)]
     #[case(1)]
     #[case(10)]
@@ -44,6 +53,14 @@ mod test {
         for i in 0..height {
             assert_eq!(rarray_zeros[i], 0.);
         }
+    }
+
+    #[rstest]
+    #[case(2, 4)]
+    #[case(4, 2)]
+    #[should_panic]
+    fn rarray1d_zeros_invalid_shape(#[case] height: usize, #[case] width: usize) {
+        let _ = Rarray1D::<f64>::zeros((height, width));
     }
 
     #[rstest]
@@ -67,6 +84,15 @@ mod test {
             assert_eq!(rarray_fill[i], value);
         }
     }
+
+    #[rstest]
+    #[case(2, 4)]
+    #[case(4, 2)]
+    #[should_panic]
+    fn rarray1d_fill_invalid_shape(#[case] height: usize, #[case] width: usize) {
+        let _ = Rarray1D::fill(0, (height, width));
+    }
+
 
     #[rstest]
     #[case(vec![1., 1., 1.])]
@@ -109,6 +135,7 @@ mod test {
     #[rstest]
     #[case(0, 10, -1)]
     #[case(10, 0, 1)]
+    #[case(0, 10, 0)]
     #[should_panic]
     fn rarray1d_range_invalid_step(#[case] start: i32, #[case] stop: i32, #[case] step: i32) {
         let _ = Rarray1D::<f64>::range(start, stop, step);

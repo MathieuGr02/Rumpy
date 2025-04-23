@@ -55,17 +55,13 @@ mod test {
         }
     }
 
-    /*
     #[rstest]
-    #[case(mat![1., 1., 1.], mat![1., 1., 1.], 3.)]
+    #[case(mat![1., 1., 1.], mat![[1.], [1.], [1.]], 3.)]
     fn rarray1d_dot(#[case] a: Rarray1D<f64>, #[case] b: Rarray1D<f64>, #[case] result: f64){
-        let rarray_a = Rarray1D::new(&a).transpose();
-        let rarray_b = Rarray1D::new(&b);
-        let rarray_dot = &rarray_a * &rarray_b;
+        let rarray_dot = &a * &b;
         println!("Result : {:?}", result);
         assert_eq!(rarray_dot, result);
     }
-    */
 
     #[rstest]
     #[case(mat![1., 1., 1.], mat![1., 1., 1., 1.])]
@@ -82,4 +78,23 @@ mod test {
     fn rarray1d_fmt(#[case] m: Rarray1D<f64>, #[case] result: String){
         assert_eq!(format!("{}", m), result);
     }
+
+    #[rstest]
+    #[case(mat![1., 1., 1.], mat![1., 1., 1.])]
+    #[case(mat![2.5], mat![2.5])]
+    fn rarray1d_eq(#[case] a: Rarray1D<f64>, #[case] b: Rarray1D<f64>) {
+        assert_eq!(a, b);
+    }
+
+    #[rstest]
+    #[case(mat![1., 1., 1.], mat![0., 1., 1.])]
+    #[case(mat![1., 1., 1.], mat![1., 0., 1.])]
+    #[case(mat![1., 1., 1.], mat![1., 0., 0.])]
+    #[case(mat![2.5], mat![0.])]
+    #[case(mat![1., 1.], mat![1.])]
+    #[case(mat![1.], mat![1., 1.])]
+    fn rarray1d_nq(#[case] a: Rarray1D<f64>, #[case] b: Rarray1D<f64>) {
+        assert_ne!(a, b);
+    }
+
 }

@@ -10,6 +10,14 @@ pub struct D1 {
     pub width: usize
 }
 
+impl D1 {
+    pub fn new(height: usize, width: usize) -> Self {
+        assert!(height == 1 || width == 1, "Invalid shape for D1");
+
+        D1 { height, width }
+    }
+}
+
 impl Index<usize> for D1 {
     type Output = usize;
 
@@ -39,6 +47,12 @@ impl Eq for D1 {
 pub struct D2 {
     pub height: usize,
     pub width: usize
+}
+
+impl D2 {
+    pub fn new(height: usize, width: usize) -> Self {
+        D2 { height, width }
+    }
 }
 
 impl Index<usize> for D2 {
@@ -71,6 +85,12 @@ pub struct D3 {
     pub height: usize,
     pub width: usize,
     pub depth: usize
+}
+
+impl D3 {
+    pub fn new(height: usize, width: usize, depth: usize) -> Self {
+        D3 { height, width, depth }
+    }
 }
 
 impl Index<usize> for D3 {
