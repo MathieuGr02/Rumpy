@@ -65,24 +65,17 @@ impl<T> Rarray1D<T> where
     /// // >> Rarray2D([[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]])
     /// ```
     pub fn outer(a: &Self, b: &Self) -> Rarray2D<T> {
-        let mut row = a.shape.height;
-        if a.shape.width > row {
-            row = a.shape.width;
-        }
-
-        let mut col = b.shape.height;
-        if b.shape.width > col {
-            col = b.shape.width;
-        }
+        let mut row = max(a.shape.height, a.shape.width);
+        let mut col = max(b.shape.height, b.shape.width);
 
         let mut result: Rarray2D<T> = Rarray2D {
             shape: D2 { height: row, width: col },
             data: vec![T::default(); row * col]
-        }; 
+        };
 
         for i in 0..row {
             for j in 0..col {
-                result.data[i * row + j] = a[i] * b[j];
+                result.data[i * col + j] = a[i] * b[j];
             }
         }
 

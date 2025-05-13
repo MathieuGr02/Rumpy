@@ -8,7 +8,9 @@ pub mod rarray1d_create;
 mod rarray2d_impl;
 pub mod rarray2d_ops;
 pub mod dimension;
-mod numeric_trait;
+pub(crate) mod numeric_trait;
+
+pub(crate) mod traits;
 
 
 #[macro_export]

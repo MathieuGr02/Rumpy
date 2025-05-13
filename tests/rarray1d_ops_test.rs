@@ -1,8 +1,9 @@
 #[cfg(test)]
 mod test {
     use rstest::rstest;
-    use rumpy::linalg::rarray::{self, Rarray1D};
+    use rumpy::linalg::rarray::{self, Rarray1D, Rarray2D};
     use rumpy::linalg::rarray::RarrayCreate;
+    use rumpy::mat;
     
     #[rstest]
     #[case(vec![1.], vec![1.], 1.)]
@@ -69,6 +70,19 @@ mod test {
         rarray.mut_transpose();
         for i in 0..rarray.get_shape()[1] {
             assert_eq!(rarray[i], a[i]);
+        }
+    }
+
+    #[rstest]
+    #[case(mat![1., 1., 1.], mat![1., 1., 1.], mat![[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]])]
+    #[case(mat![1., 1., 1.], mat![1., 1.], mat![[1., 1.], [1., 1.], [1., 1.]])]
+    #[case(mat![1., 1.], mat![1., 1., 1.], mat![[1., 1., 1.], [1., 1., 1.]])]
+    fn rarray1d_outer(#[case] a: Rarray1D<f64>, #[case] b: Rarray1D<f64>, #[case] result: Rarray2D<f64>) {
+        let outer = Rarray1D::outer(&a, &b);
+        for i in 0..(a.get_shape()[0]) {
+            for j in 0..(b.get_shape()[1]) {
+                assert_eq!(outer[[i, j]], result[[i, j]]);
+            }
         }
     }
 }

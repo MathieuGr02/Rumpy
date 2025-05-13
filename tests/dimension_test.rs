@@ -70,4 +70,20 @@ mod test {
         let dim = D2::new(1, 5);
         dim[2];
     }
+
+    #[rstest]
+    #[case(D2::new(1, 5), D2::new(1, 5))]
+    #[case(D2::new(5, 1), D2::new(5, 1))]
+    #[case(D2::new(5, 5), D2::new(5, 5))]
+    fn dimension2_eq(#[case] a: D2, #[case] b: D2) {
+        assert_eq!(a, b);
+    }
+
+    #[rstest]
+    #[case(D2::new(1, 5), D2::new(5, 1))]
+    #[case(D2::new(5, 1), D2::new(1, 5))]
+    #[case(D2::new(5, 100), D2::new(100, 5))]
+    fn dimension2_ne(#[case] a: D2, #[case] b: D2) {
+        assert_ne!(a, b);
+    }
 }

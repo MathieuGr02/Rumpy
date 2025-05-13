@@ -6,7 +6,7 @@ mod test {
     #[case(mat![1., 2., 3.], 0, 1.)]
     #[case(mat![1., 2., 3.], 1, 2.)]
     #[case(mat![1., 2., 3.], 2, 3.)]
-    fn rarray1d_indexing(#[case] m: Rarray1D<f64>, #[case] index: usize, #[case] result: f64){
+    fn rarray1d_hor_indexing(#[case] m: Rarray1D<f64>, #[case] index: usize, #[case] result: f64){
         assert_eq!(m[index], result);
     }
 
@@ -14,7 +14,24 @@ mod test {
     #[case(mat![1., 2., 3.], 0, 0.)]
     #[case(mat![1., 2., 3.], 1, 0.)]
     #[case(mat![1., 2., 3.], 2, 0.)]
-    fn rarray1d_mut_indexing(#[case] mut m: Rarray1D<f64>, #[case] index: usize, #[case] value: f64){
+    fn rarray1d_hor_mut_indexing(#[case] mut m: Rarray1D<f64>, #[case] index: usize, #[case] value: f64){
+        m[index] = value;
+        assert_eq!(m[index], value);
+    }
+
+    #[rstest]
+    #[case(mat![[1.], [2.], [3.]], 0, 1.)]
+    #[case(mat![[1.], [2.], [3.]], 1, 2.)]
+    #[case(mat![[1.], [2.], [3.]], 2, 3.)]
+    fn rarray1d_ver_indexing(#[case] m: Rarray1D<f64>, #[case] index: usize, #[case] result: f64){
+        assert_eq!(m[index], result);
+    }
+
+    #[rstest]
+    #[case(mat![[1.], [2.], [3.]], 0, 0.)]
+    #[case(mat![[1.], [2.], [3.]], 1, 0.)]
+    #[case(mat![[1.], [2.], [3.]], 2, 0.)]
+    fn rarray1d_ver_mut_indexing(#[case] mut m: Rarray1D<f64>, #[case] index: usize, #[case] value: f64){
         m[index] = value;
         assert_eq!(m[index], value);
     }
@@ -22,16 +39,31 @@ mod test {
     #[rstest]
     #[case(mat![1., 2., 3.], 3)]
     #[should_panic]
-    fn rarray1d_out_of_bounds_indexing(#[case] m: Rarray1D<f64>, #[case] index: usize){
+    fn rarray1d_hor_out_of_bounds_indexing(#[case] m: Rarray1D<f64>, #[case] index: usize){
+        let _ = m[index];
+    }
+
+    #[rstest]
+    #[case(mat![[1.], [2.], [3.]], 3)]
+    #[should_panic]
+    fn rarray1d_ver_out_of_bounds_indexing(#[case] m: Rarray1D<f64>, #[case] index: usize){
         let _ = m[index];
     }
 
     #[rstest]
     #[case(mat![1., 2., 3.], 3)]
     #[should_panic]
-    fn rarray1d_mut_out_of_bounds_indexing(#[case] mut m: Rarray1D<f64>, #[case] index: usize){
+    fn rarray1d_hor_mut_out_of_bounds_indexing(#[case] mut m: Rarray1D<f64>, #[case] index: usize){
         m[index] = 2.;
     }
+
+    #[rstest]
+    #[case(mat![[1.], [2.], [3.]], 3)]
+    #[should_panic]
+    fn rarray1d_ver_mut_out_of_bounds_indexing(#[case] mut m: Rarray1D<f64>, #[case] index: usize){
+        m[index] = 2.;
+    }
+
 
     #[rstest]
     #[case(mat![1., 1., 1.], 1., mat![1., 1., 1.])]
@@ -96,5 +128,4 @@ mod test {
     fn rarray1d_nq(#[case] a: Rarray1D<f64>, #[case] b: Rarray1D<f64>) {
         assert_ne!(a, b);
     }
-
 }
