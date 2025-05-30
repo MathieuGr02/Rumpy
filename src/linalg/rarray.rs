@@ -101,7 +101,7 @@ impl<T> RarrayMul<Rarray2D<T>, Rarray2D<T>, Rarray2D<T>> for Rarray2D<T> where
 {
     /// Performs (n x m) x (m x l) matrix multiplication
     fn mul(one: &Rarray2D<T>, other: &Rarray2D<T>) -> Rarray2D<T> {
-        assert_eq!(one.shape.height, other.shape.width, "Rarray shape mismatch");
+        assert_eq!(one.shape.width, other.shape.height, "Rarray shape mismatch");
 
         let mut result = Rarray2D {
             shape: D2 { height: one.shape.height, width: other.shape.width },
@@ -111,7 +111,7 @@ impl<T> RarrayMul<Rarray2D<T>, Rarray2D<T>, Rarray2D<T>> for Rarray2D<T> where
         for i in 0..one.shape.height {
             for j in 0..other.shape.width {
                 for k in 0..one.shape.width {
-                    result.data[i * result.shape.width + j * result.shape.height] += one.data[i * one.shape.width + k] * other.data[j * other.shape.height + k];
+                    result.data[i * result.shape.width + j] += one.data[i * one.shape.width + k] * other.data[j + other.shape.width * k];
                 }
             }
         }

@@ -24,6 +24,24 @@ impl<T> IndexMut<[usize; 2]> for Rarray2D<T> {
     }
 }
 
+impl<T> Mul<T> for &Rarray2D<T> where 
+    T: Numeric
+{
+    type Output = T;
+
+    fn mul(self, rhs: &T) -> Self::Output {
+        Rarray2D::mul(self, rhs)
+    }
+}
+
+impl<T> MulAssign<T> for Rarray2D<T> where
+    T: Numeric
+{
+    fn mul_assign(&mut self, rhs: T) {
+        self.data = Rarray2D::mul(self, rhs).data;
+    }
+}
+
 impl<T> Mul<&Rarray2D<T>> for &Rarray2D<T> where 
     T: Numeric
 {
